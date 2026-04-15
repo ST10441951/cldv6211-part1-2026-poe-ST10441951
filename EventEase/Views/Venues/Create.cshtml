@@ -1,0 +1,58 @@
+﻿@model EventEase.Models.Venue
+
+@{
+    ViewData["Title"] = "Add New Venue";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Add New Venue</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="VenueName" class="form-label fw-bold"></label>
+                            <input asp-for="VenueName" class="form-control" placeholder="e.g. Grand Hall" />
+                            <span asp-validation-for="VenueName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="VenueLocation" class="form-label fw-bold"></label>
+                            <input asp-for="VenueLocation" class="form-control" placeholder="e.g. Westville Campus" />
+                            <span asp-validation-for="VenueLocation" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="VenueCapacity" class="form-label fw-bold"></label>
+                            <input asp-for="VenueCapacity" class="form-control" placeholder="e.g. 500" />
+                            <span asp-validation-for="VenueCapacity" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ImageUrl" class="form-label fw-bold"></label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
+                            <small class="text-muted">Paste a link to a photo of the venue.</small>
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Save Venue</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

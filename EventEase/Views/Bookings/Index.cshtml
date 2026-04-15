@@ -1,0 +1,65 @@
+﻿@model IEnumerable<EventEase.Models.Booking>
+
+@{
+    ViewData["Title"] = "Bookings List";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Manage Bookings</h1>
+    <a asp-action="Create" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-circle"></i> Create New Booking
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Venue</th>
+                    <th>Event</th>
+                    <th>@Html.DisplayNameFor(model => model.BookingStartDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.BookingEndDate)</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <span class="fw-bold text-primary">@Html.DisplayFor(modelItem => item.Venue.VenueName)</span>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Event.EventName)
+                        </td>
+                        <td>
+                            @item.BookingStartDate.ToShortDateString()
+                        </td>
+                        <td>
+                            @item.BookingEndDate.ToShortDateString()
+                        </td>
+                        <td>
+                            @if (item.BookingStatus?.ToLower() == "ongoing")
+                            {
+                                <span class="badge bg-success">Ongoing</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@item.BookingStatus</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@item.BookingID" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.BookingID" class="btn btn-sm btn-outline-info">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.BookingID" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

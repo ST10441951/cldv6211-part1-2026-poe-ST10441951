@@ -1,0 +1,81 @@
+﻿@model EventEase.Models.Booking
+
+@{
+    ViewData["Title"] = "New Booking";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-calendar-plus me-2"></i>Create New Booking</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="form-floating mb-3">
+                            <select asp-for="VenueID" class="form-select" asp-items="ViewBag.VenueID">
+                                <option value="">-- Select a Venue --</option>
+                            </select>
+                            <label asp-for="VenueID">Venue</label>
+                            <span asp-validation-for="VenueID" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <select asp-for="EventID" class="form-select" asp-items="ViewBag.EventID">
+                                <option value="">-- Select an Event --</option>
+                            </select>
+                            <label asp-for="EventID">Event</label>
+                            <span asp-validation-for="EventID" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="BookingStartDate" type="date" class="form-control" placeholder="Start Date" />
+                                    <label asp-for="BookingStartDate">Start Date</label>
+                                    <span asp-validation-for="BookingStartDate" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="BookingEndDate" type="date" class="form-control" placeholder="End Date" />
+                                    <label asp-for="BookingEndDate">End Date</label>
+                                    <span asp-validation-for="BookingEndDate" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <select asp-for="BookingStatus" class="form-select">
+                                <option value="Pending">Pending</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                            <label asp-for="BookingStatus">Booking Status</label>
+                            <span asp-validation-for="BookingStatus" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle me-1"></i>Confirm Booking
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<EventEase.Models.Venue>
+
+@{
+    ViewData["Title"] = "Our Venues";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Available Venues</h1>
+    <a asp-action="Create" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-lg"></i> Add New Venue
+    </a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 transition-hover">
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.VenueName"
+                         style="height: 220px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
+                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                }
+
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">@item.VenueName</h5>
+                    <p class="card-text text-muted mb-2">
+                        <i class="bi bi-geo-alt-fill text-danger"></i> @item.VenueLocation
+                    </p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-light text-dark border">
+                            <i class="bi bi-people-fill me-1"></i> Capacity: @item.VenueCapacity
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white border-top-0 pb-3">
+                    <div class="btn-group w-100" role="group">
+                        <a asp-action="Edit" asp-route-id="@item.VenueID" class="btn btn-outline-primary btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.VenueID" class="btn btn-outline-info btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.VenueID" class="btn btn-outline-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+}
