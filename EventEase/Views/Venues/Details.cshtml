@@ -1,18 +1,23 @@
-﻿@model EventEase.Models.Venue
+﻿@* EventEase Elite - Venue Profile
+    Author: Joshua Marc Lourens
+    Description: Specialist profile view for specific locations. 
+    Implements a split-view design for media and technical data.
+*@
 
-@{
-    ViewData["Title"] = "Venue Profile";
-}
+@model EventEase.Models.Venue
 
 <div class="container py-5 mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="venue-card-manage p-0 overflow-hidden shadow-sm">
                 <div class="row g-0">
+                    @* Media Section: Taking up 5 cols to highlight the venue photo
+                       sourced from Azure Blob Storage. 
+                    *@
                     <div class="col-md-5">
                         @if (!string.IsNullOrEmpty(Model.ImageUrl))
                         {
-                            <img src="@Model.ImageUrl" class="h-100 w-100" style="object-fit: cover; min-height: 400px;" alt="Venue">
+                            <img src="@Model.ImageUrl" class="h-100 w-100" style="object-fit: cover; min-height: 400px;" alt="Venue Image">
                         }
                         else
                         {
@@ -21,6 +26,10 @@
                             </div>
                         }
                     </div>
+
+                    @* Data Section: Styled with Hero Glow and Stat Pills for
+                       high readability of operational metrics. 
+                    *@
                     <div class="col-md-7 p-5 d-flex flex-column justify-content-center">
                         <div class="mb-2">
                             <span class="stat-pill text-primary bg-primary bg-opacity-10 px-3 py-2">VENUE PROFILE</span>
@@ -29,7 +38,7 @@
                             @Model.VenueName
                         </h1>
                         
-                        <div class="row g-4 mb-5">
+                        <div class="row g-4 mb-5 pt-2">
                             <div class="col-6">
                                 <div class="fw-black text-muted small text-uppercase mb-1" style="letter-spacing: 1px;">Geography</div>
                                 <div class="fw-bold"><i class="bi bi-geo-alt-fill text-danger me-1"></i> @Model.VenueLocation</div>
@@ -50,3 +59,10 @@
         </div>
     </div>
 </div>
+
+@* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. Bootstrap Gutter-Zero: Eliminating space between media and content for a modern card feel.
+   2. Conditional Rendering: Handling 'null' image states with specialist iconography.
+   3. Layout Composition: 5:7 column ratio for optimal readability on tablet and desktop.
+*@

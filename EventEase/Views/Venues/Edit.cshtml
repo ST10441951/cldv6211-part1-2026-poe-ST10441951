@@ -1,28 +1,36 @@
-﻿@model EventEase.Models.Venue
+﻿@* EventEase Elite - Modify Venue Record
+    Author: Joshua Marc Lourens
+    Description: Administrative interface for updating existing venue data. 
+    Maintains current ImageUrl if no new file is uploaded.
+*@
+
+@model EventEase.Models.Venue
 
 <div class="container py-5 mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-5">
             <div class="venue-card-manage p-5 shadow-sm">
                 <h2 class="fw-black text-uppercase mb-4" style="letter-spacing: -1.5px;">
-                    @(Model?.VenueID > 0 ? "UPDATE" : "REGISTER") <span class="text-primary hero-glow-text">VENUE</span>
+                    UPDATE <span class="text-primary hero-glow-text">VENUE</span>
                 </h2>
                 
-                <form asp-action="@(Model?.VenueID > 0 ? "Edit" : "Create")" enctype="multipart/form-data">
+                <form asp-action="Edit" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-                    @if (Model?.VenueID > 0)
-                    {
-                        <input type="hidden" asp-for="VenueID" />
-                    }
+                    
+                    @* Hidden fields are critical here to ensure the VenueID and
+                       existing ImageUrl aren't lost during the POST back.
+                    *@
+                    <input type="hidden" asp-for="VenueID" />
+                    <input type="hidden" asp-for="ImageUrl" />
 
                     <div class="mb-3">
                         <label asp-for="VenueName" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Venue Identity</label>
-                        <input asp-for="VenueName" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="Grand Hall" />
+                        <input asp-for="VenueName" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="VenueLocation" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Location</label>
-                        <input asp-for="VenueLocation" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="Westville Campus" />
+                        <input asp-for="VenueLocation" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
                     </div>
 
                     <div class="mb-4">
@@ -31,16 +39,30 @@
                     </div>
 
                     <div class="p-4 bg-light rounded-4 mb-5 text-center border-dashed">
-                        <label class="fw-black small text-primary mb-2 d-block text-uppercase">Cloud Media Upload</label>
-                        <input asp-for="ImageFile" type="file" class="form-control form-control-sm border-0 bg-transparent" />
+                        <label class="fw-black small text-primary mb-2 d-block text-uppercase">Replace Imagery</label>
+                        <input asp-for="ImageFile" type="file" class="form-control form-control-sm border-0 bg-transparent" accept="image/*" />
+                        <small class="text-muted d-block mt-2">Leave blank to retain current cloud photo.</small>
                     </div>
 
                     <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-brand-elite py-3">CONFIRM SUBMISSION</button>
-                        <a asp-action="Index" class="fw-black text-muted text-center text-decoration-none small">CANCEL AND RETURN</a>
+                        <button type="submit" class="btn btn-brand-elite py-3">SAVE CHANGES</button>
+                        <a asp-action="Index" class="fw-black text-muted text-center text-decoration-none small">DISCARD AND RETURN</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+@* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. Hidden Input Binding: Maintaining state for primary keys in CRUD operations.
+   2. Entity Framework Update Logic: Principles of property-level tracking.
+   3. UI Consistency: Replication of the 'Register' design language for seamless specialist UX.
+*@

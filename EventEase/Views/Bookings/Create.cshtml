@@ -1,73 +1,53 @@
-﻿@model EventEase.Models.Booking
+﻿@* EventEase Elite - Event Registration
+    Author: Joshua Marc Lourens
+    Description: Specialized administrative panel for defining upcoming university events.
+*@
 
-@{
-    ViewData["Title"] = "New Booking";
-}
+@model EventEase.Models.Event
 
-<div class="container py-4">
+<div class="container py-5 mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white py-3">
-                    <h4 class="mb-0"><i class="bi bi-calendar-plus me-2"></i>Create New Booking</h4>
-                </div>
-                <div class="card-body p-4">
-                    <form asp-action="Create">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="col-lg-5 col-md-8">
+            <div class="venue-card-manage p-5 shadow-sm">
+                <h2 class="fw-black text-uppercase mb-4" style="letter-spacing: -1.5px;">
+                    REGISTER <span class="text-primary hero-glow-text">EVENT</span>
+                </h2>
+                
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
-                        <div class="form-floating mb-3">
-                            <select asp-for="VenueID" class="form-select" asp-items="ViewBag.VenueID">
-                                <option value="">-- Select a Venue --</option>
-                            </select>
-                            <label asp-for="VenueID">Venue</label>
-                            <span asp-validation-for="VenueID" class="text-danger small"></span>
-                        </div>
+                    @* Field Identity: Using Nunito 900 small-caps for administrative clarity *@
+                    <div class="mb-3">
+                        <label asp-for="EventName" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Event Identity</label>
+                        <input asp-for="EventName" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="e.g. Annual Tech Symposium" />
+                        <span asp-validation-for="EventName" class="text-danger small"></span>
+                    </div>
 
-                        <div class="form-floating mb-3">
-                            <select asp-for="EventID" class="form-select" asp-items="ViewBag.EventID">
-                                <option value="">-- Select an Event --</option>
-                            </select>
-                            <label asp-for="EventID">Event</label>
-                            <span asp-validation-for="EventID" class="text-danger small"></span>
-                        </div>
+                    <div class="mb-3">
+                        <label asp-for="EventDescription" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Brief Description</label>
+                        <textarea asp-for="EventDescription" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" rows="3" placeholder="Describe the event purpose..."></textarea>
+                        <span asp-validation-for="EventDescription" class="text-danger small"></span>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-3">
-                                    <input asp-for="BookingStartDate" type="date" class="form-control" />
-                                    <label asp-for="BookingStartDate">Start Date</label>
-                                    <span asp-validation-for="BookingStartDate" class="text-danger small"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-3">
-                                    <input asp-for="BookingEndDate" type="date" class="form-control" />
-                                    <label asp-for="BookingEndDate">End Date</label>
-                                    <span asp-validation-for="BookingEndDate" class="text-danger small"></span>
-                                </div>
-                            </div>
+                    @* Date Range: Specialists must define start and end dates before venue allocation *@
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="EventStartDate" class="fw-black small text-muted text-uppercase mb-2 d-block">Start Date</label>
+                            <input asp-for="EventStartDate" type="date" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
+                            <span asp-validation-for="EventStartDate" class="text-danger small"></span>
                         </div>
+                        <div class="col-md-6">
+                            <label asp-for="EventEndDate" class="fw-black small text-muted text-uppercase mb-2 d-block">End Date</label>
+                            <input asp-for="EventEndDate" type="date" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
+                            <span asp-validation-for="EventEndDate" class="text-danger small"></span>
+                        </div>
+                    </div>
 
-                        <div class="form-floating mb-4">
-                            <select asp-for="BookingStatus" class="form-select">
-                                <option value="Pending">Pending</option>
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                            <label asp-for="BookingStatus">Booking Status</label>
-                            <span asp-validation-for="BookingStatus" class="text-danger small"></span>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle me-1"></i>Confirm Booking
-                            </button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-1"></i>Back to List
-                            </a>
-                        </div>
-                    </form>
-                </div>
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-brand-elite py-3">CONFIRM REGISTRATION</button>
+                        <a asp-action="Index" class="fw-black text-muted text-center text-decoration-none small">CANCEL AND RETURN</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -78,3 +58,10 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+@* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. Form Validation: Use of _ValidationScriptsPartial for client-side enforcement.
+   2. Input Design: Custom Elite styling for textareas and date pickers.
+   3. Layout: Single-column centered form for focused administrative workflows.
+*@

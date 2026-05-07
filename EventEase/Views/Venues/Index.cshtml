@@ -1,6 +1,13 @@
-﻿@model IEnumerable<EventEase.Models.Venue>
+﻿@* EventEase Elite - Venues Directory
+    Author: Joshua Marc Lourens
+    Description: Directory for university locations. 
+    Includes a new Elite search panel for administrative record filtering.
+*@
+
+@model IEnumerable<EventEase.Models.Venue>
 
 <div class="container py-5 mt-4">
+    @* --- TOP HEADER --- *@
     <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
         <div>
             <h1 class="fw-black text-dark m-0 text-uppercase tracking-tight" style="font-size: 2.5rem; letter-spacing: -1px;">
@@ -14,53 +21,92 @@
         </a>
     </div>
 
-    <div class="row g-4">
-        @foreach (var item in Model)
-        {
-            <div class="col-lg-4 col-md-6">
-                <div class="venue-card-manage p-2">
-                    <div class="img-container shadow-inner">
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl" class="w-100 h-100" style="object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
-                                <i class="bi bi-building-fill text-muted fs-1"></i>
-                            </div>
-                        }
-                    </div>
+    @* --- ELITE SEARCH PANEL ---
+       Using the established SaaS styling. Form method="get" ensures the 
+       search string is passed to the controller via the URL.
+    *@
+    <div class="venue-card-manage p-3 mb-5 bg-light border-0 shadow-sm">
+        <form asp-action="Index" method="get">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-0 ps-3 text-muted">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]"
+                       class="form-control border-0 bg-transparent fw-bold"
+                       placeholder="SEARCH BY VENUE NAME OR LOCATION..." />
+                <button type="submit" class="btn btn-brand-elite px-4 ms-2">SEARCH</button>
+                <a asp-action="Index" class="btn btn-white border-0 fw-black small ms-1 pt-2 text-decoration-none">RESET</a>
+            </div>
+        </form>
+    </div>
 
-                    <div class="p-3">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h4 class="fw-black m-0 text-truncate" style="max-width: 70%;">@item.VenueName</h4>
-                            <div class="dropdown">
-                                <button class="btn btn-white btn-sm rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-4">
-                                    <li><a class="dropdown-item rounded-3 fw-bold small py-2" asp-action="Edit" asp-route-id="@item.VenueID"><i class="bi bi-pencil me-2"></i>Edit</a></li>
-                                    <li><a class="dropdown-item rounded-3 fw-bold small py-2 text-danger" asp-action="Delete" asp-route-id="@item.VenueID"><i class="bi bi-trash me-2"></i>Delete</a></li>
-                                </ul>
-                            </div>
+    @* --- VENUE GRID / EMPTY STATE --- *@
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="venue-card-manage p-2">
+                        <div class="img-container shadow-inner">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="w-100 h-100" style="object-fit: cover;" alt="Venue Image" />
+                            }
+                            else
+                            {
+                                <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-building-fill text-muted fs-1"></i>
+                                </div>
+                            }
                         </div>
 
-                        <p class="text-muted small fw-bold mb-4">
-                            <i class="bi bi-geo-alt-fill text-primary me-1"></i> @item.VenueLocation
-                        </p>
+                        <div class="p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h4 class="fw-black m-0 text-truncate" style="max-width: 70%;">@item.VenueName</h4>
+                                <div class="dropdown">
+                                    <button class="btn btn-white btn-sm rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-4">
+                                        <li><a class="dropdown-item rounded-3 fw-bold small py-2" asp-action="Edit" asp-route-id="@item.VenueID"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                        <li><a class="dropdown-item rounded-3 fw-bold small py-2 text-danger" asp-action="Delete" asp-route-id="@item.VenueID"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                    </ul>
+                                </div>
+                            </div>
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="stat-pill">
-                                <i class="bi bi-people-fill me-1"></i> @item.VenueCapacity
-                            </span>
-                            <a asp-action="Details" asp-route-id="@item.VenueID" class="fw-black text-primary text-decoration-none small">
-                                VIEW DETAILS <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
+                            <p class="text-muted small fw-bold mb-4">
+                                <i class="bi bi-geo-alt-fill text-primary me-1"></i> @item.VenueLocation
+                            </p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="stat-pill">
+                                    <i class="bi bi-people-fill me-1"></i> @item.VenueCapacity
+                                </span>
+                                <a asp-action="Details" asp-route-id="@item.VenueID" class="fw-black text-primary text-decoration-none small">
+                                    VIEW DETAILS <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-building-dash text-muted display-1 mb-3"></i>
+                <h3 class="fw-black text-muted text-uppercase">No Venues Found</h3>
+                <p class="text-muted small fw-bold text-uppercase">Check your search filters or register a new location.</p>
             </div>
         }
     </div>
 </div>
+
+@* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. Filtering Logic: Implementation of IQueryable .Where clauses for efficient SQL execution.
+   2. Input Persistence: Using ViewData to maintain search state across postbacks.
+   3. Empty State UI: Professional design pattern to improve administrative clarity.
+   4. ASP.NET Tag Helpers: Semantic use of 'asp-action' and 'method="get"' for form handling.
+*@

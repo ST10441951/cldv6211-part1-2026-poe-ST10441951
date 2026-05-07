@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* EventEase Elite - Venues Controller
+   Author: Joshua Marc Lourens
+   Description: Manages the lifecycle of venue records, including cloud-hosted 
+   imagery via Azure Blob Storage and administrative search logic.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,12 +32,25 @@ namespace EventEase.Controllers
         }
 
         // GET: Venues
-        public async Task<IActionResult> Index()
+        // Logic: Accept a search string to filter the directory by Name or Location.
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Venue.ToListAsync());
+            // Maintaining the filter state in ViewData for the UI search bar
+            ViewData["CurrentFilter"] = searchString;
+
+            var venues = _context.Venue.AsQueryable();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                // Querying the database for partial matches in Identity or Geography
+                venues = venues.Where(v => v.VenueName!.Contains(searchString)
+                                        || v.VenueLocation!.Contains(searchString));
+            }
+
+            return View(await venues.ToListAsync());
         }
 
-        // GET: Venues/Details/5 (THIS LOADS THE DETAILS PAGE)
+        // GET: Venues/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -44,7 +63,7 @@ namespace EventEase.Controllers
             return View(venue);
         }
 
-        // GET: Venues/Create (THIS LOADS THE CREATE PAGE)
+        // GET: Venues/Create
         public IActionResult Create()
         {
             return View();
@@ -57,13 +76,17 @@ namespace EventEase.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Cloud Media Logic: Check for a file upload and push to Azure Blob Storage
                 if (venue.ImageFile != null && venue.ImageFile.Length > 0)
                 {
                     string connectionString = _configuration.GetConnectionString("AzureBlobStorage");
                     BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
                     BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("venue-images");
+
+                    // Ensuring the container exists before attempting upload
                     await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
+                    // Generate a Unique ID for the filename to prevent overwriting existing assets
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(venue.ImageFile.FileName);
                     BlobClient blobClient = containerClient.GetBlobClient(fileName);
 
@@ -71,17 +94,19 @@ namespace EventEase.Controllers
                     {
                         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = venue.ImageFile.ContentType });
                     }
+                    // Mapping the resulting URI to our model for DB storage
                     venue.ImageUrl = blobClient.Uri.ToString();
                 }
 
                 _context.Add(venue);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Venue record successfully registered in the directory.";
                 return RedirectToAction(nameof(Index));
             }
             return View(venue);
         }
 
-        // GET: Venues/Edit/5 (THIS LOADS THE EDIT PAGE)
+        // GET: Venues/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -103,7 +128,7 @@ namespace EventEase.Controllers
             {
                 try
                 {
-                    // Check if a new image was uploaded
+                    // Update Cloud Media: If a new file is provided, replace the ImageUrl
                     if (venue.ImageFile != null && venue.ImageFile.Length > 0)
                     {
                         string connectionString = _configuration.GetConnectionString("AzureBlobStorage");
@@ -122,6 +147,7 @@ namespace EventEase.Controllers
 
                     _context.Update(venue);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Venue record successfully updated.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -133,7 +159,7 @@ namespace EventEase.Controllers
             return View(venue);
         }
 
-        // GET: Venues/Delete/5 (THIS LOADS THE DELETE CONFIRMATION PAGE)
+        // GET: Venues/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -151,18 +177,24 @@ namespace EventEase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // REFERENTIAL INTEGRITY CHECK: Prevent deletion if bookings are linked
             bool hasActiveBookings = await _context.Booking.AnyAsync(b => b.VenueID == id);
 
             if (hasActiveBookings)
             {
-                TempData["ErrorMessage"] = "Cannot delete this venue because it currently has active bookings.";
+                // UI Feedback for Action Blocked
+                TempData["ErrorMessage"] = "CANNOT DELETE: This venue is linked to active bookings. Purge associated records first.";
                 return RedirectToAction(nameof(Index));
             }
 
             var venue = await _context.Venue.FindAsync(id);
-            if (venue != null) _context.Venue.Remove(venue);
+            if (venue != null)
+            {
+                _context.Venue.Remove(venue);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Venue record successfully decommissioned.";
+            }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -172,3 +204,12 @@ namespace EventEase.Controllers
         }
     }
 }
+
+/* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. Azure Blob Storage SDK: Implementing BlobServiceClient for cloud media management.
+   2. IConfiguration Pattern: Dependency Injection for secure connection string retrieval.
+   3. Referential Integrity Logic: Using .AnyAsync() to validate foreign key constraints before deletion.
+   4. Search Implementation: Use of IQueryable and partial string matching for administrative filtering.
+   5. TempData Messaging: Providing tactical specialist feedback for global state changes.
+*/

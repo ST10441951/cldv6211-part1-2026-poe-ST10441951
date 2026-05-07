@@ -1,73 +1,182 @@
-﻿@{
-    ViewData["Title"] = "Elite Dashboard";
+﻿@* EventEase Elite - Specialist Dashboard
+    Author: Joshua Marc Lourens
+    Description: The landing page redesigned to communicate the system's narrative flow.
+    It moves from operational problems (Challenges) to solutions (Modules) and 
+    process (Workflow).
+*@
+
+@{
+    ViewData["Title"] = "Elite Command Center";
 }
 
-<div class="container py-5 mt-4">
-    <div class="row pt-4 pb-5 align-items-center">
+<div class="container py-4 mt-2">
+    
+    @* --- HERO SECTION ---
+       Using a single-column bold layout to maximize the impact of the 
+       Hero Glow typography and establish the administrative context.
+    *@
+    <section class="row py-5 mb-5">
         <div class="col-lg-10">
-            <h1 class="fw-black text-uppercase tracking-tight mb-4" style="font-size: 3.5rem; letter-spacing: -2px;">
-                EVENT<span class="text-primary hero-glow-text">EASE</span>: ELITE <br />ADMINISTRATIVE PORTAL
+            <span class="stat-pill text-primary bg-primary bg-opacity-10 px-3 py-2 mb-3 d-inline-block">
+                ADMINISTRATIVE BOOKING PLATFORM
+            </span>
+            <h1 class="fw-black text-uppercase tracking-tight mb-4" style="font-size: 3.8rem; line-height: 1;">
+                EVENTEASE: <span class="text-primary hero-glow-text">ELITE</span><br />
+                VENUE MANAGEMENT
             </h1>
-            <p class="text-muted fw-bold fs-5 mb-5" style="max-width: 800px;">
-                Our precision engineered booking system prevents conflicts and empowers
-                specialists to deliver seamless venue coordination across the directory.
+            <p class="text-muted fw-bold fs-5 mb-5 pe-lg-5" style="max-width: 850px;">
+                Rapid institutional growth and escalating scheduling complexities require a
+                centralized approach. EventEase moves beyond manual logs to a precision
+                engineered system that prevents double bookings, optimizes venue allocation,
+                and ensures operational efficiency for every university event.
             </p>
-            <div class="d-flex gap-3">
-                <a asp-controller="Bookings" asp-action="Create" class="btn btn-brand-elite py-3 px-5 shadow-sm">START NEW BOOKING</a>
+            <div class="d-flex gap-3 hero-btns">
+                <a asp-controller="Bookings" asp-action="Create" class="btn btn-brand-elite py-3 px-5 shadow-sm">CREATE NEW BOOKING</a>
+                <a asp-controller="Venues" asp-action="Index" class="btn btn-white border fw-black small px-5 shadow-sm pt-3">VIEW VENUES</a>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-4 col-dashboard">
-            <a asp-controller="Venues" asp-action="Index" class="dashboard-bubble shadow-sm">
-                <i class="bi bi-building-gear"></i>
-                <h3 class="fw-black text-uppercase mb-2">Venues</h3>
-                <p class="text-muted small fw-bold mb-0">Browse university locations and high capacity halls.</p>
-            </a>
+    @* --- OPERATIONAL CHALLENGES ---
+       This section justifies the project's existence by highlighting 
+       failure points like double bookings. Using the 'challenge-card' 
+       class for a semantic red-accented border.
+    *@
+    <section class="py-5 mb-5 border-top pt-5">
+        <div class="mb-5">
+            <h2 class="fw-black text-uppercase tracking-tight">OPERATIONAL <span class="text-primary">CHALLENGES</span></h2>
+            <p class="text-muted fw-bold">Addressing the critical failure points of manual coordination.</p>
         </div>
-        <div class="col-md-4 col-dashboard">
-            <a asp-controller="Events" asp-action="Index" class="dashboard-bubble shadow-sm">
-                <i class="bi bi-calendar4-event"></i>
-                <h3 class="fw-black text-uppercase mb-2">Events</h3>
-                <p class="text-muted small fw-bold mb-0">Pre-load and organize upcoming university showdowns.</p>
-            </a>
-        </div>
-        <div class="col-md-4 col-dashboard">
-            <a asp-controller="Bookings" asp-action="Index" class="dashboard-bubble shadow-sm">
-                <i class="bi bi-shield-check"></i>
-                <h3 class="fw-black text-uppercase mb-2">Bookings</h3>
-                <p class="text-muted small fw-bold mb-0">Monitor active links and prevent double bookings.</p>
-            </a>
-        </div>
-    </div>
-
-    <div class="row py-5 mt-5 border-top">
-        <div class="col-12">
-            <h3 class="fw-black text-uppercase mb-4" style="letter-spacing: -1px;">System <span class="text-primary hero-glow-text">Directives</span></h3>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="p-4 bg-white border rounded-4 shadow-sm h-100">
-                        <span class="stat-pill mb-3 d-inline-block">DATA INTEGRITY</span>
-                        <h5 class="fw-black text-uppercase small mb-2">Secure Storage</h5>
-                        <p class="text-muted small fw-bold mb-0">Information is restricted to authorized specialists only.</p>
-                    </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="venue-card-manage challenge-card p-4 h-100">
+                    <i class="bi bi-calendar-x text-danger fs-1 mb-3 d-block"></i>
+                    <h5 class="fw-black text-uppercase">Double Bookings</h5>
+                    <p class="text-muted small fw-bold">Manual logs often result in overlapping dates for high-demand campus venues, leading to logistical failures.</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="p-4 bg-white border rounded-4 shadow-sm h-100">
-                        <span class="stat-pill mb-3 d-inline-block">INFRASTRUCTURE</span>
-                        <h5 class="fw-black text-uppercase small mb-2">Cloud Readiness</h5>
-                        <p class="text-muted small fw-bold mb-0">Built to support future transitions to cloud environments.</p>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="venue-card-manage challenge-card p-4 h-100">
+                    <i class="bi bi-pencil-square text-danger fs-1 mb-3 d-block"></i>
+                    <h5 class="fw-black text-uppercase">Manual Scheduling</h5>
+                    <p class="text-muted small fw-bold">Relying on spreadsheets creates information silos, making it impossible to see availability in real-time.</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="p-4 bg-white border rounded-4 shadow-sm h-100">
-                        <span class="stat-pill mb-3 d-inline-block">UX PRECISION</span>
-                        <h5 class="fw-black text-uppercase small mb-2">Advanced Search</h5>
-                        <p class="text-muted small fw-bold mb-0">Deep filtering for locations, capacity, and unique IDs.</p>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="venue-card-manage challenge-card p-4 h-100">
+                    <i class="bi bi-eye-slash text-danger fs-1 mb-3 d-block"></i>
+                    <h5 class="fw-black text-uppercase">Limited Visibility</h5>
+                    <p class="text-muted small fw-bold">Booking specialists lack a unified directory to evaluate venue capacity and geographic suitability for events.</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    @* --- CORE PLATFORM MODULES ---
+       Standardizing the navigation bubbles into a 3-column grid for better 
+       vertical balance. Each bubble uses the 'module-card' elite styling.
+    *@
+    <section class="py-5 mb-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-black text-uppercase tracking-tight">CORE PLATFORM <span class="text-primary">MODULES</span></h2>
+            <p class="text-muted fw-bold">The three pillars of the EventEase administrative ecosystem.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a asp-controller="Venues" asp-action="Index" class="dashboard-bubble module-card shadow-sm">
+                    <i class="bi bi-building-gear"></i>
+                    <h3 class="fw-black text-uppercase mb-2">Venues</h3>
+                    <p class="text-muted small fw-bold mb-0">Manage venue capacities, locations, and media assets from a centralized interface.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a asp-controller="Events" asp-action="Index" class="dashboard-bubble module-card shadow-sm">
+                    <i class="bi bi-calendar4-event"></i>
+                    <h3 class="fw-black text-uppercase mb-2">Events</h3>
+                    <p class="text-muted small fw-bold mb-0">Organize upcoming event definitions before venue allocation becomes available.</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a asp-controller="Bookings" asp-action="Index" class="dashboard-bubble module-card shadow-sm">
+                    <i class="bi bi-shield-check"></i>
+                    <h3 class="fw-black text-uppercase mb-2">Bookings</h3>
+                    <p class="text-muted small fw-bold mb-0">Monitor reservations and utilize the precision engine to prevent scheduling conflicts.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    @* --- BOOKING WORKFLOW ---
+       Explaining the operational process step-by-step. The 'workflow-connector' 
+       pseudo-elements in the CSS provide the visual arrows between columns.
+    *@
+    <section class="py-5 mb-5 bg-light rounded-5 p-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-black text-uppercase tracking-tight">ADMINISTRATIVE <span class="text-primary">WORKFLOW</span></h2>
+            <p class="text-muted fw-bold">How our specialists process venue allocations.</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-lg-3 workflow-step workflow-connector">
+                <div class="fw-black text-primary display-6 mb-2">01</div>
+                <h6 class="fw-black text-uppercase">Customer Request</h6>
+                <p class="small text-muted fw-bold">Requests received via external communication channels.</p>
+            </div>
+            <div class="col-lg-3 workflow-step workflow-connector">
+                <div class="fw-black text-primary display-6 mb-2">02</div>
+                <h6 class="fw-black text-uppercase">Record Entry</h6>
+                <p class="small text-muted fw-bold">Specialist creates a draft booking link in the portal.</p>
+            </div>
+            <div class="col-lg-3 workflow-step workflow-connector">
+                <div class="fw-black text-primary display-6 mb-2">03</div>
+                <h6 class="fw-black text-uppercase">Venue Validation</h6>
+                <p class="small text-muted fw-bold">System runs a conflict scan on capacity and dates.</p>
+            </div>
+            <div class="col-lg-3 workflow-step">
+                <div class="fw-black text-primary display-6 mb-2">04</div>
+                <h6 class="fw-black text-uppercase">Confirmation</h6>
+                <p class="small text-muted fw-bold">Booking finalized and record ID generated.</p>
+            </div>
+        </div>
+    </section>
+
+    @* --- SYSTEM DIRECTIVES ---
+       Using 'hover-lift' for a tactile response. These cards communicate 
+       the technical scalability and integrity requirements of the project.
+    *@
+    <section class="py-5 border-top">
+        <div class="mb-5">
+            <h3 class="fw-black text-uppercase mb-4" style="letter-spacing: -1px;">SYSTEM <span class="text-primary hero-glow-text">DIRECTIVES</span></h3>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 bg-white border rounded-4 shadow-sm h-100 transition-all hover-lift">
+                    <span class="stat-pill mb-3 d-inline-block">DATA INTEGRITY</span>
+                    <h5 class="fw-black text-uppercase small mb-2">Secure Storage</h5>
+                    <p class="text-muted small fw-bold mb-0">Administrative information is restricted to authorized specialists only via secure database protocols.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white border rounded-4 shadow-sm h-100 transition-all hover-lift">
+                    <span class="stat-pill mb-3 d-inline-block">INFRASTRUCTURE</span>
+                    <h5 class="fw-black text-uppercase small mb-2">Cloud Scalability</h5>
+                    <p class="text-muted small fw-bold mb-0">Built to support high-traffic university seasons with a future-proof cloud migration path.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white border rounded-4 shadow-sm h-100 transition-all hover-lift">
+                    <span class="stat-pill mb-3 d-inline-block">UX PRECISION</span>
+                    <h5 class="fw-black text-uppercase small mb-2">Advanced Filtering</h5>
+                    <p class="text-muted small fw-bold mb-0">Deep search capabilities allow for immediate filtering by location, capacity, and system IDs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+@* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. UI/UX Hierarchy: Visual balance using "The Rule of Odds" for module cards.
+   2. Information Architecture: Narrative content restructuring for enterprise SaaS.
+   3. Workflow Visualization: Step-based process modeling for administrative systems.
+   4. Typography: Nunito 900 weight application for high-contrast dashboard headers.
+*@

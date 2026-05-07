@@ -343,4 +343,4 @@ C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Data.Ta
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Storage.Files.Shares.dll
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Storage.Queues.dll
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Microsoft.Extensions.Azure.dll
-C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\compressed\lvhof90p4l-{0}-gawpv1rhkv-gawpv1rhkv.gz
+C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\compressed\lvhof90p4l-{0}-lzicebnviu-lzicebnviu.gz

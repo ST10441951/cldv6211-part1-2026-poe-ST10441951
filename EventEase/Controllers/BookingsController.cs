@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* EventEase Elite - Bookings Infrastructure
+   Author: Joshua Marc Lourens
+   Description: The primary logic engine for venue allocation. 
+   Implements temporal conflict detection to prevent overlapping reservations.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +25,8 @@ namespace EventEase.Controllers
             _context = context;
         }
 
-        // PHASE 3: Search by BookingID or Event Name (Consolidated View)
+        // GET: Bookings
+        // Logic: Implements Phase 3 search functionality for specialist record retrieval.
         public async Task<IActionResult> Index(string searchString)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -31,7 +38,7 @@ namespace EventEase.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                // Checks for Event Name (case-insensitive) or exact Booking ID
+                // Querying for partial Event Name matches or exact Booking ID
                 bookings = bookings.Where(b => b.Event!.EventName!.Contains(searchString)
                                             || b.BookingID.ToString() == searchString);
             }
@@ -39,6 +46,7 @@ namespace EventEase.Controllers
             return View(await bookings.ToListAsync());
         }
 
+        // GET: Bookings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -53,6 +61,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
+        // GET: Bookings/Create
         public IActionResult Create()
         {
             ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName");
@@ -60,39 +69,42 @@ namespace EventEase.Controllers
             return View();
         }
 
+        // POST: Bookings/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BookingID,VenueID,EventID,BookingStartDate,BookingEndDate,BookingStatus")] Booking booking)
         {
             if (ModelState.IsValid)
             {
-                // PHASE 2: Inclusive Overlap Check (Blocks same-day double bookings)
-                var existingBookings = await _context.Booking
-                    .Where(b => b.VenueID == booking.VenueID)
-                    .ToListAsync();
+                /* --- ELITE CONFLICT DETECTION GATE --- 
+                   Scanning the database for any existing confirmed bookings at the 
+                   same venue that overlap with the requested timeline.
+                */
+                bool isDoubleBooked = await _context.Booking.AnyAsync(b =>
+                    b.VenueID == booking.VenueID &&
+                    b.BookingStatus != "Cancelled" &&
+                    ((booking.BookingStartDate >= b.BookingStartDate && booking.BookingStartDate < b.BookingEndDate) ||
+                     (booking.BookingEndDate > b.BookingStartDate && booking.BookingEndDate <= b.BookingEndDate)));
 
-                bool isOverlap = existingBookings.Any(b =>
-                    booking.BookingStartDate <= b.BookingEndDate &&
-                    booking.BookingEndDate >= b.BookingStartDate);
-
-                if (isOverlap)
+                if (isDoubleBooked)
                 {
-                    TempData["ErrorMessage"] = "The venue is already booked for the selected date. Please choose a different venue or date.";
-                    ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
-                    ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
-                    return View(booking);
+                    // Specialist Feedback: Blocking the transaction to protect venue integrity
+                    ModelState.AddModelError("", "CONFLICT DETECTED: This venue is already reserved for the selected dates.");
                 }
-
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Booking successfully created!";
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    _context.Add(booking);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Booking ID #" + booking.BookingID + " successfully confirmed.";
+                    return RedirectToAction(nameof(Index));
+                }
             }
             ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
             ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
             return View(booking);
         }
 
+        // GET: Bookings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -105,6 +117,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
+        // POST: Bookings/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BookingID,VenueID,EventID,BookingStartDate,BookingEndDate,BookingStatus")] Booking booking)
@@ -113,27 +126,11 @@ namespace EventEase.Controllers
 
             if (ModelState.IsValid)
             {
-                var existingBookings = await _context.Booking
-                    .Where(b => b.VenueID == booking.VenueID && b.BookingID != booking.BookingID)
-                    .ToListAsync();
-
-                bool isOverlap = existingBookings.Any(b =>
-                    booking.BookingStartDate <= b.BookingEndDate &&
-                    booking.BookingEndDate >= b.BookingStartDate);
-
-                if (isOverlap)
-                {
-                    TempData["ErrorMessage"] = "Update failed: The venue is already reserved for the new timeframe.";
-                    ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
-                    ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
-                    return View(booking);
-                }
-
                 try
                 {
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Booking updated successfully!";
+                    TempData["SuccessMessage"] = "Booking record updated successfully.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -147,6 +144,7 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
+        // GET: Bookings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -161,21 +159,30 @@ namespace EventEase.Controllers
             return View(booking);
         }
 
+        // POST: Bookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var booking = await _context.Booking.FindAsync(id);
-            if (booking != null) _context.Booking.Remove(booking);
+            if (booking != null)
+            {
+                _context.Booking.Remove(booking);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Booking record successfully purged from the ledger.";
+            }
 
-            await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "Booking deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BookingExists(int id)
-        {
-            return _context.Booking.Any(e => e.BookingID == id);
-        }
+        private bool BookingExists(int id) => _context.Booking.Any(e => e.BookingID == id);
     }
 }
+
+/* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. Date Range Logic: Implementation of overlapping interval detection for scheduling.
+   2. LINQ to Entities: Use of .AnyAsync() for lightweight database existence checks.
+   3. MVC Lifecycle: Handling complex POST back scenarios with ViewData and SelectLists.
+   4. UI Alerts: Leveraging TempData for tactical specialist feedback.
+*/

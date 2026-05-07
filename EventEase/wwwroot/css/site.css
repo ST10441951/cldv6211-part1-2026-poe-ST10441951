@@ -1,20 +1,49 @@
+/* EventEase Elite - Unified Styling System
+    Author: Joshua Marc Lourens
+    Project: Venue Management System (Administrative Infrastructure)
+*/
+
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-/* --- 1. CORE ENGINE & RESET --- */
+/* --- 1. CORE ENGINE & RESET --- 
+   Setting up the base environment. We're using Nunito for a modern, 
+   friendly SaaS look. Webkit smoothing is added to ensure fonts 
+   look premium on MacOS and high-res displays. 
+*/
 body {
     font-family: 'Nunito', sans-serif !important;
-    background-color: #f8fafc !important;
-    color: #1e293b;
+    background-color: #f8fafc !important; /* Soft gray-blue background to reduce eye strain */
+    color: #1e293b; /* Slate blue for text - much softer than pure black */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 }
 
+/* High-impact weight for primary headers */
 .fw-black {
     font-weight: 900 !important;
 }
 
-/* --- 2. ELITE NAVBAR (GLASSMORPHISM) --- */
+/* Tightening tracking for that professional "SaaS" display font look */
+.tracking-tight {
+    letter-spacing: -1.5px;
+}
+
+/* Universal transition for any property changes - ensures no 'snapping' */
+.transition-all {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Simple utility to lift elements on hover - adds physical depth to the UI */
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* --- 2. ELITE NAVBAR (GLASSMORPHISM) --- 
+   Implementing the glassmorphism trend. The backdrop-filter blurs the 
+   content behind the nav, making the portal feel layered and modern. 
+*/
 nav.navbar {
     backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.85) !important;
@@ -25,19 +54,22 @@ nav.navbar {
 .navbar-brand {
     letter-spacing: -1px;
     font-size: 1.25rem;
+    font-weight: 900;
 }
 
-/* --- 3. TYPOGRAPHY & BRANDING --- */
+/* --- 3. TYPOGRAPHY & HERO EFFECTS --- 
+   Creating a 'Glow' effect using text-shadow. This emphasizes key 
+   branding elements without needing heavy graphics. 
+*/
 .hero-glow-text {
     font-weight: 900 !important;
     text-shadow: 0 0 20px rgba(14, 165, 233, 0.35);
 }
 
-.tracking-tight {
-    letter-spacing: -1.5px;
-}
-
-/* --- 4. DASHBOARD BUBBLE ENGINE (HOME PAGE) --- */
+/* --- 4. DASHBOARD BUBBLE ENGINE --- 
+   These are the main interactive 'bubbles' for the landing page. 
+   Using Flexbox here to make sure all bubbles in a row have equal height. 
+*/
 .col-dashboard {
     display: flex;
 }
@@ -45,7 +77,7 @@ nav.navbar {
 .dashboard-bubble {
     background: #ffffff;
     border: 1px solid rgba(226, 232, 240, 0.8) !important;
-    border-radius: 32px;
+    border-radius: 32px; /* Extra rounded for the 'bubble' aesthetic */
     padding: 3rem 2rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none !important;
@@ -59,7 +91,7 @@ nav.navbar {
 }
 
     .dashboard-bubble:hover {
-        transform: translateY(-10px);
+        transform: translateY(-10px); /* Lifts higher than standard cards */
         border-color: #0ea5e9 !important;
         box-shadow: 0 20px 40px rgba(14, 165, 233, 0.1) !important;
     }
@@ -72,17 +104,20 @@ nav.navbar {
     }
 
     .dashboard-bubble:hover i {
-        transform: scale(1.1);
+        transform: scale(1.1); /* Subtle icon grow on hover */
     }
 
-/* --- 5. STANDARD ELITE CARDS (VENUES/CRUD PANELS) --- */
+/* --- 5. STANDARD ELITE CARDS --- 
+   Used for Venue and Event listings. Overflow is set to visible 
+   so that action dropdown menus aren't clipped by the card borders. 
+*/
 .venue-card-manage {
     background: #ffffff;
     border: 1px solid #e2e8f0 !important;
     border-radius: 24px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    overflow: hidden;
+    overflow: visible !important;
 }
 
     .venue-card-manage:hover {
@@ -91,34 +126,12 @@ nav.navbar {
         border-color: #0ea5e9 !important;
     }
 
-.img-container {
-    height: 180px;
-    border-radius: 18px;
-    margin: 12px;
-    overflow: hidden;
-    background: #f1f5f9;
-}
-
-/* --- 6. FORMS & INPUTS --- */
-.form-control {
-    border-radius: 14px !important;
-    padding: 0.75rem 1rem;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s;
-}
-
-    .form-control:focus {
-        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
-        border-color: #0ea5e9;
-    }
-
-.border-dashed {
-    border: 2px dashed #e2e8f0 !important;
-}
-
-/* --- 7. BUTTONS & UI --- */
+/* --- 6. BUTTONS & UI --- 
+   Brand buttons use a dark-to-blue shift. 0.8rem font keeps the 
+   buttons looking professional and not too 'bulky'. 
+*/
 .btn-brand-elite {
-    background: #0f172a;
+    background: #0f172a; /* Deep navy */
     color: white !important;
     font-weight: 800;
     text-transform: uppercase;
@@ -131,7 +144,7 @@ nav.navbar {
 }
 
     .btn-brand-elite:hover {
-        background: #0ea5e9;
+        background: #0ea5e9; /* Electric blue on hover */
         transform: scale(1.04);
         box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
     }
@@ -148,7 +161,7 @@ nav.navbar {
         border-color: #0ea5e9;
     }
 
-/* --- 8. PILLS & ALERTS --- */
+/* Stat pills for labels/categories - very 'dashboard' feel */
 .stat-pill {
     background: #f1f5f9;
     padding: 6px 14px;
@@ -160,6 +173,51 @@ nav.navbar {
     letter-spacing: 0.5px;
 }
 
-.alert {
-    border-radius: 18px;
+/* --- 7. ENTERPRISE LANDING PAGE HELPERS --- */
+
+/* Semantic coloring: Red accent to highlight operational problems */
+.challenge-card {
+    border-left: 4px solid #ef4444 !important;
 }
+
+/* Semantic coloring: Blue accent to represent active modules */
+.module-card {
+    border-top: 4px solid #0ea5e9 !important;
+}
+
+/* Creating the visual 'flow' for the workflow section using pseudo-elements */
+.workflow-connector {
+    position: relative;
+}
+
+@media (min-width: 992px) {
+    /* Using Bootstrap Icon code \F138 as a connector arrow on desktop */
+    .workflow-connector::after {
+        content: '\F138';
+        font-family: "bootstrap-icons";
+        position: absolute;
+        right: -10%;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #e2e8f0;
+        font-size: 1.5rem;
+    }
+}
+
+/* Adjusting CTAs for mobile screens to prevent overflow */
+@media (max-width: 576px) {
+    .hero-btns {
+        flex-direction: column;
+    }
+}
+
+/* ---------------------------------------------------
+   REFERENCES & ATTRIBUTIONS
+   ---------------------------------------------------
+   1. Typography: Nunito Font via Google Fonts API (https://fonts.google.com/specimen/Nunito)
+   2. Glassmorphism Effects: Inspired by MDN Web Docs "backdrop-filter" (https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter)
+   3. Smooth Scrolling & Transitions: Cubic-bezier logic derived from CSS-Tricks "Guide to CSS Transitions"
+   4. Iconography: Bootstrap Icons v1.11.1 (https://icons.getbootstrap.com/)
+   5. Design Philosophy: Refactoring UI (Principles of SaaS visual hierarchy and spacing)
+   6. Spacing & Grid: Built upon the Bootstrap 5.3 Grid System (https://getbootstrap.com/docs/5.3/layout/grid/)
+*/

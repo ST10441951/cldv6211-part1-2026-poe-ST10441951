@@ -1,38 +1,50 @@
-﻿@model EventEase.Models.Venue
+﻿@* EventEase Elite - Venue Registration
+    Author: Joshua Marc Lourens
+    Description: Focused form for adding new infrastructure to the directory. 
+    Implements multi-part form data for Azure image uploads.
+*@
+
+@model EventEase.Models.Venue
 
 <div class="container py-5 mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-5">
             <div class="venue-card-manage p-5 shadow-sm">
                 <h2 class="fw-black text-uppercase mb-4" style="letter-spacing: -1.5px;">
-                    @(Model?.VenueID > 0 ? "UPDATE" : "REGISTER") <span class="text-primary hero-glow-text">VENUE</span>
+                    REGISTER <span class="text-primary hero-glow-text">VENUE</span>
                 </h2>
                 
-                <form asp-action="@(Model?.VenueID > 0 ? "Edit" : "Create")" enctype="multipart/form-data">
+                @* enctype attribute is required here so the ImageFile (IFormFile)
+                   is correctly bound in the controller.
+                *@
+                <form asp-action="Create" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
-                    @if (Model?.VenueID > 0)
-                    {
-                        <input type="hidden" asp-for="VenueID" />
-                    }
 
                     <div class="mb-3">
                         <label asp-for="VenueName" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Venue Identity</label>
-                        <input asp-for="VenueName" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="Grand Hall" />
+                        <input asp-for="VenueName" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="e.g. Grand Hall" />
+                        <span asp-validation-for="VenueName" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="VenueLocation" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Location</label>
                         <input asp-for="VenueLocation" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="Westville Campus" />
+                        <span asp-validation-for="VenueLocation" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-4">
                         <label asp-for="VenueCapacity" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Max Capacity</label>
                         <input asp-for="VenueCapacity" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" style="max-width: 140px;" />
+                        <span asp-validation-for="VenueCapacity" class="text-danger small"></span>
                     </div>
 
+                    @* Cloud Media Section: Styled as a 'dashed' zone to indicate
+                       specialized interaction for file uploads.
+                    *@
                     <div class="p-4 bg-light rounded-4 mb-5 text-center border-dashed">
                         <label class="fw-black small text-primary mb-2 d-block text-uppercase">Cloud Media Upload</label>
-                        <input asp-for="ImageFile" type="file" class="form-control form-control-sm border-0 bg-transparent" />
+                        <input asp-for="ImageFile" type="file" class="form-control form-control-sm border-0 bg-transparent" accept="image/*" />
+                        <small class="text-muted d-block mt-2">Specialists should upload clear venue photography.</small>
                     </div>
 
                     <div class="d-grid gap-3">
@@ -44,3 +56,17 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+@* TECHNICAL REFERENCES
+   ---------------------------------------------------
+   1. Multi-part Form Submission: Handling file uploads in ASP.NET Core (https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads)
+   2. Data Validation: Client-side validation using jQuery Unobtrusive (via _ValidationScriptsPartial).
+   3. CSS Border-Dashed: Custom utility for specialized UI upload zones.
+   4. Form-Control Styling: Standard Bootstrap inputs modified for the Elite aesthetic.
+*@
