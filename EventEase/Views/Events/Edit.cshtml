@@ -1,54 +1,75 @@
 ﻿@model EventEase.Models.Event
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Event";
 }
 
-<h1>Edit</h1>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Event</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="EventID" />
 
-<h4>Event</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EventID" />
-            <div class="form-group">
-                <label asp-for="BookingID" class="control-label"></label>
-                <select asp-for="BookingID" class="form-control" asp-items="ViewBag.BookingID"></select>
-                <span asp-validation-for="BookingID" class="text-danger"></span>
+                        <div class="form-floating mb-3">
+                            <input asp-for="EventName" class="form-control" placeholder="Event Name" />
+                            <label asp-for="EventName"></label>
+                            <span asp-validation-for="EventName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="EventDescription" class="form-control" placeholder="Description" style="height: 100px"></textarea>
+                            <label asp-for="EventDescription">Event Description</label>
+                            <span asp-validation-for="EventDescription" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <select asp-for="VenueID" class="form-select" asp-items="ViewBag.VenueID">
+                                <option value="">-- Optional: Link to a Venue --</option>
+                            </select>
+                            <label asp-for="VenueID">Associated Venue</label>
+                            <span asp-validation-for="VenueID" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="EventStartDate" type="date" class="form-control" />
+                                    <label asp-for="EventStartDate">Start Date</label>
+                                    <span asp-validation-for="EventStartDate" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="EventEndDate" type="date" class="form-control" />
+                                    <label asp-for="EventEndDate">End Date</label>
+                                    <span asp-validation-for="EventEndDate" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold">
+                                <i class="bi bi-save me-1"></i>Save Changes
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="EventStartDate" class="control-label"></label>
-                <input asp-for="EventStartDate" class="form-control" />
-                <span asp-validation-for="EventStartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventEndDate" class="control-label"></label>
-                <input asp-for="EventEndDate" class="form-control" />
-                <span asp-validation-for="EventEndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventName" class="control-label"></label>
-                <input asp-for="EventName" class="form-control" />
-                <span asp-validation-for="EventName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventDescription" class="control-label"></label>
-                <input asp-for="EventDescription" class="form-control" />
-                <span asp-validation-for="EventDescription" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -4,6 +4,7 @@ using EventEase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEase.Migrations
 {
     [DbContext(typeof(EventEaseContext))]
-    partial class EventEaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260507070303_RemovedBookingIdFromEvent")]
+    partial class RemovedBookingIdFromEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,12 +83,7 @@ namespace EventEase.Migrations
                     b.Property<DateOnly>("EventStartDate")
                         .HasColumnType("date");
 
-                    b.Property<int?>("VenueID")
-                        .HasColumnType("int");
-
                     b.HasKey("EventID");
-
-                    b.HasIndex("VenueID");
 
                     b.ToTable("Event");
                 });
@@ -135,15 +133,6 @@ namespace EventEase.Migrations
                         .HasForeignKey("VenueID1");
 
                     b.Navigation("Event");
-
-                    b.Navigation("Venue");
-                });
-
-            modelBuilder.Entity("EventEase.Models.Event", b =>
-                {
-                    b.HasOne("EventEase.Models.Venue", "Venue")
-                        .WithMany()
-                        .HasForeignKey("VenueID");
 
                     b.Navigation("Venue");
                 });

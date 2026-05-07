@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using EventEase.Data;
 using EventEase.Models;
 
-// Microsoft Corporation (2024). Overview of ASP.NET Core MVC. [Online] Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/overview [Accessed 8 April 2026].
-
 namespace EventEase.Controllers
 {
     public class EventsController : Controller
@@ -21,10 +19,20 @@ namespace EventEase.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var eventEaseContext = _context.Event.Include(e => e.Booking);
-            return View(await eventEaseContext.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+
+            // Include the Venue table so we can see the name in the list
+            var events = _context.Event.Include(e => e.Venue).AsQueryable();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                events = events.Where(e => e.EventName!.Contains(searchString)
+                                        || e.EventDescription!.Contains(searchString));
+            }
+
+            return View(await events.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -32,8 +40,10 @@ namespace EventEase.Controllers
             if (id == null) return NotFound();
 
             var @event = await _context.Event
-                .Include(e => e.Booking)
+                .Include(e => e.Venue)
+                .Include(e => e.Bookings)
                 .FirstOrDefaultAsync(m => m.EventID == id);
+
             if (@event == null) return NotFound();
 
             return View(@event);
@@ -41,13 +51,13 @@ namespace EventEase.Controllers
 
         public IActionResult Create()
         {
-            ViewData["BookingID"] = new SelectList(_context.Booking, "BookingID", "BookingID");
+            ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventID,BookingID,EventStartDate,EventEndDate,EventName,EventDescription")] Event @event)
+        public async Task<IActionResult> Create([Bind("EventID,EventName,EventDescription,EventStartDate,EventEndDate,VenueID")] Event @event)
         {
             if (ModelState.IsValid)
             {
@@ -55,7 +65,7 @@ namespace EventEase.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookingID"] = new SelectList(_context.Booking, "BookingID", "BookingID", @event.BookingID);
+            ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", @event.VenueID);
             return View(@event);
         }
 
@@ -65,13 +75,14 @@ namespace EventEase.Controllers
 
             var @event = await _context.Event.FindAsync(id);
             if (@event == null) return NotFound();
-            ViewData["BookingID"] = new SelectList(_context.Booking, "BookingID", "BookingID", @event.BookingID);
+
+            ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", @event.VenueID);
             return View(@event);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventID,BookingID,EventStartDate,EventEndDate,EventName,EventDescription")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("EventID,EventName,EventDescription,EventStartDate,EventEndDate,VenueID")] Event @event)
         {
             if (id != @event.EventID) return NotFound();
 
@@ -89,41 +100,10 @@ namespace EventEase.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookingID"] = new SelectList(_context.Booking, "BookingID", "BookingID", @event.BookingID);
+            ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", @event.VenueID);
             return View(@event);
         }
 
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var @event = await _context.Event
-                .Include(e => e.Booking)
-                .FirstOrDefaultAsync(m => m.EventID == id);
-            if (@event == null) return NotFound();
-
-            return View(@event);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var @event = await _context.Event.FindAsync(id);
-            if (@event != null) _context.Event.Remove(@event);
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool BookingExists(int id)
-        {
-            return _context.Event.Any(e => e.EventID == id);
-        }
-
-        private bool EventExists(int id)
-        {
-            return _context.Event.Any(e => e.EventID == id);
-        }
+        private bool EventExists(int id) => _context.Event.Any(e => e.EventID == id);
     }
 }

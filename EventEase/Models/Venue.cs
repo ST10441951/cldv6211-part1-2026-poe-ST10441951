@@ -13,11 +13,11 @@ namespace EventEase.Models
 
         [Required]
         [Display(Name = "Venue Name")]
-        public string VenueName { get; set; }
+        public string? VenueName { get; set; }
 
         [Required]
         [Display(Name = "Location")]
-        public string VenueLocation { get; set; }
+        public string? VenueLocation { get; set; }
 
         [Required]
         [Display(Name = "Capacity")]

@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using EventEase.Data;
 using EventEase.Models;
 
-// Microsoft Corporation (2024). Overview of ASP.NET Core MVC. [Online] Available at: https://learn.microsoft.com/en-us/aspnet/core/mvc/overview [Accessed 8 April 2026].
-
 namespace EventEase.Controllers
 {
     public class BookingsController : Controller
@@ -21,11 +19,22 @@ namespace EventEase.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        // PHASE 3: Search by BookingID or Event Name (Consolidated View)
+        public async Task<IActionResult> Index(string searchString)
         {
+            ViewData["CurrentFilter"] = searchString;
+
             var bookings = _context.Booking
+                .Include(b => b.Event)
                 .Include(b => b.Venue)
-                .Include(b => b.Event);
+                .AsQueryable();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                // Checks for Event Name (case-insensitive) or exact Booking ID
+                bookings = bookings.Where(b => b.Event!.EventName!.Contains(searchString)
+                                            || b.BookingID.ToString() == searchString);
+            }
 
             return View(await bookings.ToListAsync());
         }
@@ -35,8 +44,10 @@ namespace EventEase.Controllers
             if (id == null) return NotFound();
 
             var booking = await _context.Booking
+                .Include(b => b.Event)
                 .Include(b => b.Venue)
                 .FirstOrDefaultAsync(m => m.BookingID == id);
+
             if (booking == null) return NotFound();
 
             return View(booking);
@@ -44,8 +55,8 @@ namespace EventEase.Controllers
 
         public IActionResult Create()
         {
-            ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName");
             ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName");
+            ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName");
             return View();
         }
 
@@ -55,10 +66,29 @@ namespace EventEase.Controllers
         {
             if (ModelState.IsValid)
             {
+                // PHASE 2: Inclusive Overlap Check (Blocks same-day double bookings)
+                var existingBookings = await _context.Booking
+                    .Where(b => b.VenueID == booking.VenueID)
+                    .ToListAsync();
+
+                bool isOverlap = existingBookings.Any(b =>
+                    booking.BookingStartDate <= b.BookingEndDate &&
+                    booking.BookingEndDate >= b.BookingStartDate);
+
+                if (isOverlap)
+                {
+                    TempData["ErrorMessage"] = "The venue is already booked for the selected date. Please choose a different venue or date.";
+                    ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
+                    ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
+                    return View(booking);
+                }
+
                 _context.Add(booking);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Booking successfully created!";
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
             ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
             return View(booking);
         }
@@ -70,6 +100,7 @@ namespace EventEase.Controllers
             var booking = await _context.Booking.FindAsync(id);
             if (booking == null) return NotFound();
 
+            ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
             ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
             return View(booking);
         }
@@ -82,10 +113,27 @@ namespace EventEase.Controllers
 
             if (ModelState.IsValid)
             {
+                var existingBookings = await _context.Booking
+                    .Where(b => b.VenueID == booking.VenueID && b.BookingID != booking.BookingID)
+                    .ToListAsync();
+
+                bool isOverlap = existingBookings.Any(b =>
+                    booking.BookingStartDate <= b.BookingEndDate &&
+                    booking.BookingEndDate >= b.BookingStartDate);
+
+                if (isOverlap)
+                {
+                    TempData["ErrorMessage"] = "Update failed: The venue is already reserved for the new timeframe.";
+                    ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
+                    ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
+                    return View(booking);
+                }
+
                 try
                 {
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Booking updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -94,6 +142,7 @@ namespace EventEase.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
             ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
             return View(booking);
         }
@@ -103,8 +152,10 @@ namespace EventEase.Controllers
             if (id == null) return NotFound();
 
             var booking = await _context.Booking
+                .Include(b => b.Event)
                 .Include(b => b.Venue)
                 .FirstOrDefaultAsync(m => m.BookingID == id);
+
             if (booking == null) return NotFound();
 
             return View(booking);
@@ -118,6 +169,7 @@ namespace EventEase.Controllers
             if (booking != null) _context.Booking.Remove(booking);
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Booking deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 

@@ -30,19 +30,13 @@ namespace EventEase.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configure the Booking -> Event relationship
-            // This clears up the 'Unable to determine relationship' error
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.Event)
-                .WithMany()
+                .WithMany(e => e.Bookings) // THE FIX: This correctly links the plural 'Bookings' list
                 .HasForeignKey(b => b.EventID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configure the Event -> Booking relationship
-            modelBuilder.Entity<Event>()
-                .HasOne(e => e.Booking)
-                .WithMany()
-                .HasForeignKey(e => e.BookingID)
-                .OnDelete(DeleteBehavior.Restrict);
+            // NOTE: The third block that was causing the crash has been completely removed!
         }
     }
 }
