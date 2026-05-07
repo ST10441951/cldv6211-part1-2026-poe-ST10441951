@@ -12,7 +12,7 @@
                     <h4 class="mb-0">Add New Venue</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form asp-action="Create">
+                    <form asp-action="Create" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="mb-3">
@@ -34,10 +34,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label asp-for="ImageUrl" class="form-label fw-bold"></label>
-                            <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
-                            <small class="text-muted">Paste a link to a photo of the venue.</small>
-                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            <label asp-for="ImageFile" class="form-label fw-bold">Upload Venue Image</label>
+                            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                            <small class="text-muted">Select a photo from your computer to upload to Azure Blob Storage.</small>
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
                         </div>
 
                         <div class="d-grid gap-2">
