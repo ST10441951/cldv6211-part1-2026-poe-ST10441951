@@ -336,7 +336,6 @@ C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\refint\EventE
 C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\EventEase.pdb
 C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\EventEase.genruntimeconfig.cache
 C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\ref\EventEase.dll
-C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\compressed\lvhof90p4l-{0}-hfjfw9jxcp-hfjfw9jxcp.gz
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Storage.Blobs.dll
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Storage.Common.dll
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\System.IO.Hashing.dll
@@ -344,3 +343,4 @@ C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Data.Ta
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Storage.Files.Shares.dll
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Azure.Storage.Queues.dll
 C:\Users\Joshua\source\repos\EventEase\EventEase\bin\Debug\net10.0\Microsoft.Extensions.Azure.dll
+C:\Users\Joshua\source\repos\EventEase\EventEase\obj\Debug\net10.0\compressed\lvhof90p4l-{0}-gawpv1rhkv-gawpv1rhkv.gz

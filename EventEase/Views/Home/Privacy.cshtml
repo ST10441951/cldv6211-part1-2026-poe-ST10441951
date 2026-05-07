@@ -1,6 +1,58 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Security Protocols";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="venue-card-manage p-5">
+                <h1 class="fw-black text-uppercase mb-3 tracking-tight hero-glow-text" style="font-size: 2.8rem;">
+                    PRIVACY & <span class="text-primary">DATA SECURITY</span>
+                </h1>
+                <p class="text-muted fw-bold small text-uppercase mb-5" style="letter-spacing: 2px;">
+                    Authorized Administrative Protocols for 2026
+                </p>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        <div class="p-4 bg-light rounded-4 h-100 border">
+                            <h4 class="fw-black text-uppercase small mb-3 text-primary">Specialist Clearance</h4>
+                            <p class="text-muted small fw-bold mb-0">
+                                Access to the EventEase platform is strictly restricted to authorized booking specialists.
+                                Every update to venue capacity or locations is logged for internal auditing.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-4 bg-light rounded-4 h-100 border">
+                            <h4 class="fw-black text-uppercase small mb-3 text-primary">Conflict Prevention</h4>
+                            <p class="text-muted small fw-bold mb-0">
+                                Our precision engine automatically scans schedules to prevent double bookings.
+                                Venues with active links cannot be removed from the registry.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-top pt-4">
+                    <h5 class="fw-black text-uppercase small mb-3">Core Data Requirements</h5>
+                    <p class="text-muted small fw-bold mb-4">
+                        As mandated by the CEO, our system maintains secure records of the following administrative data:
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="stat-pill">UNIQUE BOOKING IDS</span>
+                        <span class="stat-pill">VENUE LOCATIONS</span>
+                        <span class="stat-pill">MAX CAPACITY METRICS</span>
+                        <span class="stat-pill">AZURE MEDIA METADATA</span>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-4 border-top">
+                    <a asp-action="Index" class="fw-black text-primary text-decoration-none small">
+                        <i class="bi bi-arrow-left me-2"></i> RETURN TO DASHBOARD
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,35 +3,34 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] : EventEase Admin</title>
+    <title>@ViewData["Title"] | EventEase Elite</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light fixed-top mb-3">
+        <nav class="navbar navbar-expand-lg fixed-top">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-lightning-charge-fill me-2"></i>EventEase
+                <a class="navbar-brand fw-black text-uppercase tracking-tight" asp-area="" asp-controller="Home" asp-action="Index">
+                    EVENT<span class="text-primary hero-glow-text">EASE</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
-                    <ul class="navbar-nav gap-2">
+                <div class="navbar-collapse collapse justify-content-end">
+                    <ul class="navbar-nav align-items-center gap-3">
                         <li class="nav-item">
-                            <a class="nav-link px-3 fw-bold" asp-controller="Home" asp-action="Index">Dashboard</a>
+                            <a class="nav-link fw-bold small text-dark text-uppercase" asp-controller="Venues" asp-action="Index">Venues</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 fw-bold" asp-controller="Venues" asp-action="Index">Venues</a>
+                            <a class="nav-link fw-bold small text-dark text-uppercase" asp-controller="Events" asp-action="Index">Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link px-3 fw-bold" asp-controller="Events" asp-action="Index">Events</a>
+                            <a class="nav-link fw-bold small text-dark text-uppercase" asp-controller="Bookings" asp-action="Index">Bookings</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-primary text-white ms-lg-2 px-4" asp-controller="Bookings" asp-action="Index">Bookings</a>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-brand-elite px-4" asp-controller="Bookings" asp-action="Create">New Booking</a>
                         </li>
                     </ul>
                 </div>
@@ -39,30 +38,34 @@
         </nav>
     </header>
 
-    <div class="container" style="margin-top: 100px;">
-        <main role="main" class="pb-3">
+    <main role="main" style="margin-top: 120px;">
+        <div class="container">
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger border-0 shadow-sm alert-dismissible fade show rounded-4" role="alert">
-                    <i class="bi bi-shield-exclamation me-2"></i> @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-danger border-0 shadow-sm rounded-4 px-4 py-3 mb-4 d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-octagon-fill me-3 fs-4"></i>
+                    <span class="fw-bold small text-uppercase">@TempData["ErrorMessage"]</span>
                 </div>
             }
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show rounded-4" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-success border-0 shadow-sm rounded-4 px-4 py-3 mb-4 d-flex align-items-center" role="alert">
+                    <i class="bi bi-patch-check-fill me-3 fs-4"></i>
+                    <span class="fw-bold small text-uppercase">@TempData["SuccessMessage"]</span>
                 </div>
             }
+        </div>
+        @RenderBody()
+    </main>
 
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="footer py-4 bg-white border-top mt-5">
+    <footer class="py-5 mt-5 border-top bg-white">
         <div class="container text-center">
-            <span class="text-muted">&copy; 2026 : EventEase Admin Platform : Secure Scheduling for Booking Specialists</span>
+            <p class="text-muted fw-bold small text-uppercase mb-3" style="letter-spacing: 1px;">
+                © 2026 EventEase Admin Portal : Secure Specialist Infrastructure
+            </p>
+            <a asp-controller="Home" asp-action="Privacy" class="btn btn-white border fw-black small px-4 shadow-sm text-decoration-none pt-2">
+                <i class="bi bi-shield-lock me-2"></i> SECURITY PROTOCOLS
+            </a>
         </div>
     </footer>
 

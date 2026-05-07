@@ -1,58 +1,46 @@
 ﻿@model EventEase.Models.Venue
 
-@{
-    ViewData["Title"] = "Add New Venue";
-}
-
-<div class="container mt-4">
+<div class="container py-5 mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Add New Venue</h4>
-                </div>
-                <div class="card-body p-4">
-                    <form asp-action="Create" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="col-lg-5">
+            <div class="venue-card-manage p-5 shadow-sm">
+                <h2 class="fw-black text-uppercase mb-4" style="letter-spacing: -1.5px;">
+                    @(Model?.VenueID > 0 ? "UPDATE" : "REGISTER") <span class="text-primary hero-glow-text">VENUE</span>
+                </h2>
+                
+                <form asp-action="@(Model?.VenueID > 0 ? "Edit" : "Create")" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    @if (Model?.VenueID > 0)
+                    {
+                        <input type="hidden" asp-for="VenueID" />
+                    }
 
-                        <div class="mb-3">
-                            <label asp-for="VenueName" class="form-label fw-bold"></label>
-                            <input asp-for="VenueName" class="form-control" placeholder="e.g. Grand Hall" />
-                            <span asp-validation-for="VenueName" class="text-danger"></span>
-                        </div>
+                    <div class="mb-3">
+                        <label asp-for="VenueName" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Venue Identity</label>
+                        <input asp-for="VenueName" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="Grand Hall" />
+                    </div>
 
-                        <div class="mb-3">
-                            <label asp-for="VenueLocation" class="form-label fw-bold"></label>
-                            <input asp-for="VenueLocation" class="form-control" placeholder="e.g. Westville Campus" />
-                            <span asp-validation-for="VenueLocation" class="text-danger"></span>
-                        </div>
+                    <div class="mb-3">
+                        <label asp-for="VenueLocation" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Location</label>
+                        <input asp-for="VenueLocation" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="Westville Campus" />
+                    </div>
 
-                        <div class="mb-3">
-                            <label asp-for="VenueCapacity" class="form-label fw-bold"></label>
-                            <input asp-for="VenueCapacity" class="form-control" placeholder="e.g. 500" />
-                            <span asp-validation-for="VenueCapacity" class="text-danger"></span>
-                        </div>
+                    <div class="mb-4">
+                        <label asp-for="VenueCapacity" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Max Capacity</label>
+                        <input asp-for="VenueCapacity" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" style="max-width: 140px;" />
+                    </div>
 
-                        <div class="mb-4">
-                            <label asp-for="ImageFile" class="form-label fw-bold">Upload Venue Image</label>
-                            <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
-                            <small class="text-muted">Select a photo from your computer to upload to Azure Blob Storage.</small>
-                            <span asp-validation-for="ImageFile" class="text-danger"></span>
-                        </div>
+                    <div class="p-4 bg-light rounded-4 mb-5 text-center border-dashed">
+                        <label class="fw-black small text-primary mb-2 d-block text-uppercase">Cloud Media Upload</label>
+                        <input asp-for="ImageFile" type="file" class="form-control form-control-sm border-0 bg-transparent" />
+                    </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">Save Venue</button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
-                        </div>
-                    </form>
-                </div>
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-brand-elite py-3">CONFIRM SUBMISSION</button>
+                        <a asp-action="Index" class="fw-black text-muted text-center text-decoration-none small">CANCEL AND RETURN</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

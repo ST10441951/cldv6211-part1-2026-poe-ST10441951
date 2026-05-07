@@ -1,84 +1,165 @@
-:root {
-    --primary-blue: #0d6efd;
-    --dark-slate: #1e293b;
-    --light-bg: #f1f5f9;
-    --accent-teal: #0ea5e9;
-    --success-green: #10b981;
-    --glass: rgba(255, 255, 255, 0.95);
-    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-}
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
+/* --- 1. CORE ENGINE & RESET --- */
 body {
-    background-color: var(--light-bg);
-    color: var(--dark-slate);
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    margin-bottom: 60px;
+    font-family: 'Nunito', sans-serif !important;
+    background-color: #f8fafc !important;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
-/* Modern Header */
-.navbar {
-    background: var(--glass) !important;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    padding: 1rem 0;
+.fw-black {
+    font-weight: 900 !important;
+}
+
+/* --- 2. ELITE NAVBAR (GLASSMORPHISM) --- */
+nav.navbar {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.85) !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.6) !important;
+    padding: 0.8rem 0;
 }
 
 .navbar-brand {
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: var(--primary-blue) !important;
-    font-size: 1.5rem;
+    letter-spacing: -1px;
+    font-size: 1.25rem;
 }
 
-/* Hero Section */
-.hero-gradient {
-    background: linear-gradient(135deg, #1e293b 0%, #0d6efd 100%);
-    color: white;
-    padding: 80px 0;
-    border-radius: 24px;
-    margin-bottom: 40px;
-    box-shadow: var(--shadow-soft);
+/* --- 3. TYPOGRAPHY & BRANDING --- */
+.hero-glow-text {
+    font-weight: 900 !important;
+    text-shadow: 0 0 20px rgba(14, 165, 233, 0.35);
 }
 
-/* Dashboard Cards */
-.card-feature {
-    border: none;
-    border-radius: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: white;
-    height: 100%;
+.tracking-tight {
+    letter-spacing: -1.5px;
 }
 
-    .card-feature:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-soft);
-    }
-
-.icon-box {
-    width: 60px;
-    height: 60px;
-    border-radius: 15px;
+/* --- 4. DASHBOARD BUBBLE ENGINE (HOME PAGE) --- */
+.col-dashboard {
     display: flex;
+}
+
+.dashboard-bubble {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    border-radius: 32px;
+    padding: 3rem 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    text-align: center;
+    height: 100%;
+    width: 100%;
 }
 
-/* Typography Refinements */
-h1, h2, h3 {
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    .dashboard-bubble:hover {
+        transform: translateY(-10px);
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 20px 40px rgba(14, 165, 233, 0.1) !important;
+    }
+
+    .dashboard-bubble i {
+        font-size: 3.5rem;
+        color: #0ea5e9;
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .dashboard-bubble:hover i {
+        transform: scale(1.1);
+    }
+
+/* --- 5. STANDARD ELITE CARDS (VENUES/CRUD PANELS) --- */
+.venue-card-manage {
+    background: #ffffff;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 24px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-.text-muted-custom {
-    color: #64748b;
-    line-height: 1.6;
+    .venue-card-manage:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+        border-color: #0ea5e9 !important;
+    }
+
+.img-container {
+    height: 180px;
+    border-radius: 18px;
+    margin: 12px;
+    overflow: hidden;
+    background: #f1f5f9;
 }
 
-.btn-primary {
+/* --- 6. FORMS & INPUTS --- */
+.form-control {
+    border-radius: 14px !important;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+    .form-control:focus {
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+        border-color: #0ea5e9;
+    }
+
+.border-dashed {
+    border: 2px dashed #e2e8f0 !important;
+}
+
+/* --- 7. BUTTONS & UI --- */
+.btn-brand-elite {
+    background: #0f172a;
+    color: white !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     border-radius: 12px;
-    padding: 10px 24px;
-    font-weight: 600;
-    box-shadow: 0 4px 6px -1px rgba(13, 110, 253, 0.3);
+    padding: 12px 28px;
+    font-size: 0.8rem;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-brand-elite:hover {
+        background: #0ea5e9;
+        transform: scale(1.04);
+        box-shadow: 0 10px 20px rgba(14, 165, 233, 0.2);
+    }
+
+.btn-white {
+    background: white;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    transition: all 0.2s;
+}
+
+    .btn-white:hover {
+        background: #f8fafc;
+        border-color: #0ea5e9;
+    }
+
+/* --- 8. PILLS & ALERTS --- */
+.stat-pill {
+    background: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-weight: 800;
+    font-size: 0.7rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.alert {
+    border-radius: 18px;
 }

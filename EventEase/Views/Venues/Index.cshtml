@@ -1,57 +1,66 @@
 ﻿@model IEnumerable<EventEase.Models.Venue>
 
-@{
-    ViewData["Title"] = "Our Venues";
-}
+<div class="container py-5 mt-4">
+    <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
+        <div>
+            <h1 class="fw-black text-dark m-0 text-uppercase tracking-tight" style="font-size: 2.5rem; letter-spacing: -1px;">
+                OUR <span class="text-primary hero-glow-text">VENUES</span>
+            </h1>
+            <p class="text-muted fw-bold small text-uppercase mt-2" style="letter-spacing: 2px;">Internal Administration Hub</p>
+        </div>
+        
+        <a asp-action="Create" class="btn btn-brand-elite shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i> Register Venue
+        </a>
+    </div>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Available Venues</h1>
-    <a asp-action="Create" class="btn btn-primary shadow-sm">
-        <i class="bi bi-plus-lg"></i> Add New Venue
-    </a>
-</div>
-
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    @foreach (var item in Model)
-    {
-        <div class="col">
-            <div class="card h-100 shadow-sm border-0 transition-hover">
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                {
-                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.VenueName"
-                         style="height: 220px; object-fit: cover;">
-                }
-                else
-                {
-                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
-                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-4 col-md-6">
+                <div class="venue-card-manage p-2">
+                    <div class="img-container shadow-inner">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" class="w-100 h-100" style="object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-building-fill text-muted fs-1"></i>
+                            </div>
+                        }
                     </div>
-                }
 
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">@item.VenueName</h5>
-                    <p class="card-text text-muted mb-2">
-                        <i class="bi bi-geo-alt-fill text-danger"></i> @item.VenueLocation
-                    </p>
-                    <div class="d-flex align-items-center">
-                        <span class="badge bg-light text-dark border">
-                            <i class="bi bi-people-fill me-1"></i> Capacity: @item.VenueCapacity
-                        </span>
-                    </div>
-                </div>
+                    <div class="p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h4 class="fw-black m-0 text-truncate" style="max-width: 70%;">@item.VenueName</h4>
+                            <div class="dropdown">
+                                <button class="btn btn-white btn-sm rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-4">
+                                    <li><a class="dropdown-item rounded-3 fw-bold small py-2" asp-action="Edit" asp-route-id="@item.VenueID"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                    <li><a class="dropdown-item rounded-3 fw-bold small py-2 text-danger" asp-action="Delete" asp-route-id="@item.VenueID"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                </ul>
+                            </div>
+                        </div>
 
-                <div class="card-footer bg-white border-top-0 pb-3">
-                    <div class="btn-group w-100" role="group">
-                        <a asp-action="Edit" asp-route-id="@item.VenueID" class="btn btn-outline-primary btn-sm">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.VenueID" class="btn btn-outline-info btn-sm">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.VenueID" class="btn btn-outline-danger btn-sm">Delete</a>
+                        <p class="text-muted small fw-bold mb-4">
+                            <i class="bi bi-geo-alt-fill text-primary me-1"></i> @item.VenueLocation
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="stat-pill">
+                                <i class="bi bi-people-fill me-1"></i> @item.VenueCapacity
+                            </span>
+                            <a asp-action="Details" asp-route-id="@item.VenueID" class="fw-black text-primary text-decoration-none small">
+                                VIEW DETAILS <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
-
-@section Scripts {
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-}

@@ -1,173 +1,73 @@
 ﻿@{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Elite Dashboard";
 }
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold text-primary">EventEase Dashboard</h1>
-        <p class="lead text-muted">Manage your venues, schedule events, and track bookings all in one place.</p>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 transition-hover">
-                <div class="card-body text-center p-4">
-                    <div class="display-5 text-primary mb-3">
-                        <i class="bi bi-building"></i>
-                    </div>
-                    <h3 class="card-title h4">Venues</h3>
-                    <p class="card-text text-muted">View all available university locations and college halls.</p>
-                    <a asp-controller="Venues" asp-action="Index" class="btn btn-primary w-100 mt-3">Manage Venues</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 transition-hover">
-                <div class="card-body text-center p-4">
-                    <div class="display-5 text-success mb-3">
-                        <i class="bi bi-calendar-event"></i>
-                    </div>
-                    <h3 class="card-title h4">Events</h3>
-                    <p class="card-text text-muted">Schedule and organize your upcoming university showdowns.</p>
-                    <a asp-controller="Events" asp-action="Index" class="btn btn-success w-100 mt-3 text-white">Manage Events</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 transition-hover">
-                <div class="card-body text-center p-4">
-                    <div class="display-5 text-info mb-3">
-                        <i class="bi bi-journal-check"></i>
-                    </div>
-                    <h3 class="card-title h4">Bookings</h3>
-                    <p class="card-text text-muted">Link events to venues and track current booking statuses.</p>
-                    <a asp-controller="Bookings" asp-action="Index" class="btn btn-info w-100 mt-3 text-white">Manage Bookings</a>
-                </div>
+<div class="container py-5 mt-4">
+    <div class="row pt-4 pb-5 align-items-center">
+        <div class="col-lg-10">
+            <h1 class="fw-black text-uppercase tracking-tight mb-4" style="font-size: 3.5rem; letter-spacing: -2px;">
+                EVENT<span class="text-primary hero-glow-text">EASE</span>: ELITE <br />ADMINISTRATIVE PORTAL
+            </h1>
+            <p class="text-muted fw-bold fs-5 mb-5" style="max-width: 800px;">
+                Our precision engineered booking system prevents conflicts and empowers
+                specialists to deliver seamless venue coordination across the directory.
+            </p>
+            <div class="d-flex gap-3">
+                <a asp-controller="Bookings" asp-action="Create" class="btn btn-brand-elite py-3 px-5 shadow-sm">START NEW BOOKING</a>
             </div>
         </div>
     </div>
 
-    <div class="mt-5 p-4 bg-light rounded-3 border">
-        <div class="row text-center">
-            <div class="col-md-12">
-                @{
-                    ViewData["Title"] = "Welcome to EventEase";
-                }
+    <div class="row g-4 mb-5">
+        <div class="col-md-4 col-dashboard">
+            <a asp-controller="Venues" asp-action="Index" class="dashboard-bubble shadow-sm">
+                <i class="bi bi-building-gear"></i>
+                <h3 class="fw-black text-uppercase mb-2">Venues</h3>
+                <p class="text-muted small fw-bold mb-0">Browse university locations and high capacity halls.</p>
+            </a>
+        </div>
+        <div class="col-md-4 col-dashboard">
+            <a asp-controller="Events" asp-action="Index" class="dashboard-bubble shadow-sm">
+                <i class="bi bi-calendar4-event"></i>
+                <h3 class="fw-black text-uppercase mb-2">Events</h3>
+                <p class="text-muted small fw-bold mb-0">Pre-load and organize upcoming university showdowns.</p>
+            </a>
+        </div>
+        <div class="col-md-4 col-dashboard">
+            <a asp-controller="Bookings" asp-action="Index" class="dashboard-bubble shadow-sm">
+                <i class="bi bi-shield-check"></i>
+                <h3 class="fw-black text-uppercase mb-2">Bookings</h3>
+                <p class="text-muted small fw-bold mb-0">Monitor active links and prevent double bookings.</p>
+            </a>
+        </div>
+    </div>
 
-                <div class="container py-4">
-                    <div class="hero-gradient px-5 text-center text-md-start">
-                        <div class="row align-items-center">
-                            <div class="col-lg-7">
-                                <h1 class="display-3 mb-3">Mastering the Art of the Event</h1>
-                                <p class="lead mb-4 opacity-90">
-                                    EventEase has transitioned from manual scheduling to a digital-first approach.
-                                    We have replaced outdated manual logs with a precision booking platform
-                                    designed to eliminate conflicts and maximize venue utility.
-                                </p>
-                                <div class="d-flex gap-3 justify-content-center justify-content-md-start">
-                                    <a asp-controller="Bookings" asp-action="Index" class="btn btn-light btn-lg px-4 fw-bold text-primary">View Schedule</a>
-                                    <a href="#about" class="btn btn-outline-light btn-lg px-4">Our Mission</a>
-                                </div>
-                            </div>
-                            <div class="col-lg-5 d-none d-lg-block text-center">
-                                <i class="bi bi-calendar2-check-fill" style="font-size: 12rem; opacity: 0.2;"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-4 mb-5">
-                        <div class="col-md-4">
-                            <div class="card card-feature shadow-sm">
-                                <div class="card-body p-4 text-center">
-                                    <div class="icon-box bg-primary bg-opacity-10 text-primary mx-auto">
-                                        <i class="bi bi-building"></i>
-                                    </div>
-                                    <h4>Venues</h4>
-                                    <p class="text-muted-custom">Manage university locations, college halls, and high-capacity areas with integrated image hosting.</p>
-                                    <a asp-controller="Venues" asp-action="Index" class="btn btn-primary w-100 mt-2">Manage Venues</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card card-feature shadow-sm">
-                                <div class="card-body p-4 text-center">
-                                    <div class="icon-box bg-success bg-opacity-10 text-success mx-auto">
-                                        <i class="bi bi-calendar-event"></i>
-                                    </div>
-                                    <h4>Events</h4>
-                                    <p class="text-muted-custom">Load upcoming events into the queue before venues become available to ensure seamless planning.</p>
-                                    <a asp-controller="Events" asp-action="Index" class="btn btn-success w-100 text-white mt-2">Manage Events</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card card-feature shadow-sm">
-                                <div class="card-body p-4 text-center">
-                                    <div class="icon-box bg-info bg-opacity-10 text-info mx-auto">
-                                        <i class="bi bi-person-badge"></i>
-                                    </div>
-                                    <h4>Specialist Desk</h4>
-                                    <p class="text-muted-custom">Our centralized hub for handling call-in, email, and walk-in requests from our valued clients.</p>
-                                    <a asp-controller="Bookings" asp-action="Index" class="btn btn-info w-100 text-white mt-2">Create Booking</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="about" class="row py-5 align-items-center">
-                        <div class="col-md-6 mb-4 mb-md-0">
-                            <h2 class="display-5 mb-4">From Manual Chaos to <span class="text-primary">Streamlined Success</span></h2>
-                            <p class="text-muted-custom fs-5">
-                                Previously, EventEase relied on manual scheduling. This led to frequent double bookings,
-                                costly last-minute cancellations, and zero visibility into venue availability.
-                            </p>
-                            <p class="text-muted-custom">
-                                Our new internal platform provides a clear view of all scheduled events.
-                                Authorised booking specialists can now browse available venues, manage
-                                conflicts, and ensure that every guest experience is handled with professional precision.
-                            </p>
-                            <ul class="list-unstyled mt-4">
-                                <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i> Conflict Prevention Engine</li>
-                                <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i> Secure Local & Cloud Storage</li>
-                                <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i> Scalable Admin Infrastructure</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-5 bg-white rounded-4 shadow-sm border">
-                                <h4 class="mb-4">Operational Status</h4>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Venue Availability Tracking</span>
-                                    <span class="text-success fw-bold">Live</span>
-                                </div>
-                                <div class="progress mb-4" style="height: 8px;">
-                                    <div class="progress-bar bg-success" style="width: 100%"></div>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Double Booking Prevention</span>
-                                    <span class="text-primary fw-bold">Active</span>
-                                </div>
-                                <div class="progress mb-4" style="height: 8px;">
-                                    <div class="progress-bar" style="width: 100%"></div>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Cloud Migration Readiness</span>
-                                    <span class="text-info fw-bold">Phase 1</span>
-                                </div>
-                                <div class="progress" style="height: 8px;">
-                                    <div class="progress-bar bg-info" style="width: 45%"></div>
-                                </div>
-                            </div>
-                        </div>
+    <div class="row py-5 mt-5 border-top">
+        <div class="col-12">
+            <h3 class="fw-black text-uppercase mb-4" style="letter-spacing: -1px;">System <span class="text-primary hero-glow-text">Directives</span></h3>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="p-4 bg-white border rounded-4 shadow-sm h-100">
+                        <span class="stat-pill mb-3 d-inline-block">DATA INTEGRITY</span>
+                        <h5 class="fw-black text-uppercase small mb-2">Secure Storage</h5>
+                        <p class="text-muted small fw-bold mb-0">Information is restricted to authorized specialists only.</p>
                     </div>
                 </div>
-                <h4 class="text-muted mb-0 font-weight-light">Ready to organize? Start by creating a <strong>Venue</strong> first!</h4>
+                <div class="col-md-4">
+                    <div class="p-4 bg-white border rounded-4 shadow-sm h-100">
+                        <span class="stat-pill mb-3 d-inline-block">INFRASTRUCTURE</span>
+                        <h5 class="fw-black text-uppercase small mb-2">Cloud Readiness</h5>
+                        <p class="text-muted small fw-bold mb-0">Built to support future transitions to cloud environments.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 bg-white border rounded-4 shadow-sm h-100">
+                        <span class="stat-pill mb-3 d-inline-block">UX PRECISION</span>
+                        <h5 class="fw-black text-uppercase small mb-2">Advanced Search</h5>
+                        <p class="text-muted small fw-bold mb-0">Deep filtering for locations, capacity, and unique IDs.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-}
