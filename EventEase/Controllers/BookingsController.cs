@@ -1,7 +1,8 @@
 ﻿/* EventEase Elite - Bookings Infrastructure
    Author: Joshua Marc Lourens
    Description: The primary logic engine for venue allocation. 
-   Implements temporal conflict detection to prevent overlapping reservations.
+   Implements high-precision conflict detection (inclusive overlaps) and 
+   pre-flight infrastructure checks for data integrity.
 */
 
 using System;
@@ -26,11 +27,12 @@ namespace EventEase.Controllers
         }
 
         // GET: Bookings
-        // Logic: Implements Phase 3 search functionality for specialist record retrieval.
+        // Logic: Implements administrative search functionality (Requirement C)
         public async Task<IActionResult> Index(string searchString)
         {
             ViewData["CurrentFilter"] = searchString;
 
+            // Using Eager Loading to consolidate Venue and Event data (Requirement C)
             var bookings = _context.Booking
                 .Include(b => b.Event)
                 .Include(b => b.Venue)
@@ -38,7 +40,7 @@ namespace EventEase.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                // Querying for partial Event Name matches or exact Booking ID
+                // Specialist search by Booking ID or partial Event Name
                 bookings = bookings.Where(b => b.Event!.EventName!.Contains(searchString)
                                             || b.BookingID.ToString() == searchString);
             }
@@ -64,6 +66,16 @@ namespace EventEase.Controllers
         // GET: Bookings/Create
         public IActionResult Create()
         {
+            // PRE-FLIGHT CHECK: Block access if basic infrastructure (Venues/Events) is missing
+            var venueCount = _context.Venue.Count();
+            var eventCount = _context.Event.Count();
+
+            if (venueCount == 0 || eventCount == 0)
+            {
+                TempData["ErrorMessage"] = "SYSTEM ALERT: Register at least one Venue and one Event before creating a Booking.";
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName");
             ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName");
             return View();
@@ -76,27 +88,34 @@ namespace EventEase.Controllers
         {
             if (ModelState.IsValid)
             {
-                /* --- ELITE CONFLICT DETECTION GATE --- 
-                   Scanning the database for any existing confirmed bookings at the 
-                   same venue that overlap with the requested timeline.
+                /* --- REINFORCED INCLUSIVE CONFLICT CHECK --- 
+                   Formula: (StartA <= EndB) AND (EndA >= StartB)
+                   This logic captures same-day overlaps and ensures no venue is double-booked.
                 */
                 bool isDoubleBooked = await _context.Booking.AnyAsync(b =>
                     b.VenueID == booking.VenueID &&
                     b.BookingStatus != "Cancelled" &&
-                    ((booking.BookingStartDate >= b.BookingStartDate && booking.BookingStartDate < b.BookingEndDate) ||
-                     (booking.BookingEndDate > b.BookingStartDate && booking.BookingEndDate <= b.BookingEndDate)));
+                    booking.BookingStartDate <= b.BookingEndDate &&
+                    booking.BookingEndDate >= b.BookingStartDate);
 
                 if (isDoubleBooked)
                 {
-                    // Specialist Feedback: Blocking the transaction to protect venue integrity
-                    ModelState.AddModelError("", "CONFLICT DETECTED: This venue is already reserved for the selected dates.");
+                    // Adding a model error so the specialist sees the conflict in the form summary
+                    ModelState.AddModelError("", "CONFLICT DETECTED: This venue is already reserved for the selected date(s).");
                 }
                 else
                 {
-                    _context.Add(booking);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Booking ID #" + booking.BookingID + " successfully confirmed.";
-                    return RedirectToAction(nameof(Index));
+                    try
+                    {
+                        _context.Add(booking);
+                        await _context.SaveChangesAsync();
+                        TempData["SuccessMessage"] = "Booking confirmed and record generated.";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (DbUpdateException)
+                    {
+                        ModelState.AddModelError("", "DATA ERROR: A synchronization issue occurred. Verify your selection.");
+                    }
                 }
             }
             ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
@@ -126,18 +145,35 @@ namespace EventEase.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                /* --- INCLUSIVE CONFLICT CHECK (EDIT MODE) --- 
+                   Ensuring we don't compare the booking against itself (b.BookingID != id).
+                */
+                bool isConflict = await _context.Booking.AnyAsync(b =>
+                    b.BookingID != id &&
+                    b.VenueID == booking.VenueID &&
+                    b.BookingStatus != "Cancelled" &&
+                    booking.BookingStartDate <= b.BookingEndDate &&
+                    booking.BookingEndDate >= b.BookingStartDate);
+
+                if (isConflict)
                 {
-                    _context.Update(booking);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Booking record updated successfully.";
+                    ModelState.AddModelError("", "MODIFICATION BLOCKED: Updated dates conflict with another confirmed booking.");
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!BookingExists(booking.BookingID)) return NotFound();
-                    else throw;
+                    try
+                    {
+                        _context.Update(booking);
+                        await _context.SaveChangesAsync();
+                        TempData["SuccessMessage"] = "Booking record updated.";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!BookingExists(booking.BookingID)) return NotFound();
+                        else throw;
+                    }
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["EventID"] = new SelectList(_context.Event, "EventID", "EventName", booking.EventID);
             ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName", booking.VenueID);
@@ -181,8 +217,8 @@ namespace EventEase.Controllers
 
 /* TECHNICAL REFERENCES
    ---------------------------------------------------
-   1. Date Range Logic: Implementation of overlapping interval detection for scheduling.
-   2. LINQ to Entities: Use of .AnyAsync() for lightweight database existence checks.
-   3. MVC Lifecycle: Handling complex POST back scenarios with ViewData and SelectLists.
-   4. UI Alerts: Leveraging TempData for tactical specialist feedback.
+   1. Inclusive Boundary Detection: Implementing (StartA <= EndB && EndA >= StartB) to catch same-day overlaps.
+   2. Referential Integrity: Utilizing pre-flight checks to ensure parent records (Venue/Event) exist.
+   3. Eager Loading (.Include): Consolidating multiple entities for administrative displays (Requirement C).
+   4. ModelState Validation: Mapping server-side business rules to the UI alert system (Requirement B).
 */

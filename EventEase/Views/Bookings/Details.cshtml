@@ -1,85 +1,56 @@
-﻿@* EventEase Elite - Event Profile
-    Author: Joshua Marc Lourens
-    Description: Detailed review of an event record, including linked booking audits.
+﻿@* EventEase Elite - Booking Details
+    File Path: Views/Bookings/Details.cshtml
 *@
 
-@model EventEase.Models.Event
+@model EventEase.Models.Booking
 
 <div class="container py-5 mt-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-lg-8">
             <div class="venue-card-manage p-5 shadow-sm">
                 <div class="mb-3">
-                    <span class="stat-pill text-primary bg-primary bg-opacity-10 px-3 py-2">EVENT PROFILE</span>
+                    <span class="stat-pill text-primary bg-primary bg-opacity-10 px-3 py-2 text-uppercase fw-black small">Allocation Profile</span>
                 </div>
                 
-                <h1 class="fw-black text-uppercase mb-4 hero-glow-text" style="font-size: 3rem; letter-spacing: -1.5px;">
-                    @Model.EventName
+                <h1 class="fw-black text-uppercase mb-4 hero-glow-text" style="font-size: 2.5rem; letter-spacing: -1px;">
+                    Booking <span class="text-primary">#@Model.BookingID</span>
                 </h1>
 
-                <p class="text-muted fw-bold fs-5 mb-5" style="max-width: 800px;">
-                    @Model.EventDescription
-                </p>
-
-                @* Timeline Audit: Providing a clear view of the event schedule *@
                 <div class="row g-4 mb-5 border-top pt-5">
-                    <div class="col-md-4">
-                        <div class="fw-black text-muted small text-uppercase mb-2" style="letter-spacing: 1px;">Start Date</div>
-                        <div class="fw-bold h5 text-success"><i class="bi bi-calendar-play me-2"></i>@Model.EventStartDate.ToString("dd MMMM yyyy")</div>
+                    @* Associated Event *@
+                    <div class="col-md-6">
+                        <div class="fw-black text-muted small text-uppercase mb-2">Associated Event</div>
+                        <div class="fw-black h4 text-dark">@Model.Event?.EventName</div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="fw-black text-muted small text-uppercase mb-2" style="letter-spacing: 1px;">End Date</div>
-                        <div class="fw-bold h5 text-danger"><i class="bi bi-calendar-x me-2"></i>@Model.EventEndDate.ToString("dd MMMM yyyy")</div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="fw-black text-muted small text-uppercase mb-2" style="letter-spacing: 1px;">System ID</div>
-                        <div class="fw-bold h5 text-dark">#@Model.EventID</div>
-                    </div>
-                </div>
 
-                @* Associated Bookings: Critical for specialists to see which
-                   venues are already linked to this event.
-                *@
-                <div class="mb-5">
-                    <h5 class="fw-black text-uppercase mb-4" style="letter-spacing: -1px;">Associated <span class="text-primary">Bookings</span></h5>
-                    @if (Model.Bookings != null && Model.Bookings.Any())
-                    {
-                        <div class="list-group list-group-flush border rounded-4 overflow-hidden">
-                            @foreach (var booking in Model.Bookings)
-                            {
-                                <div class="list-group-item p-4 bg-light bg-opacity-50">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <div class="fw-black text-dark text-uppercase small mb-1">Venue Linked</div>
-                                            <div class="fw-bold">@booking.Venue?.VenueName</div>
-                                        </div>
-                                        <span class="stat-pill text-white bg-dark">@booking.BookingStatus</span>
-                                    </div>
-                                </div>
-                            }
+                    @* Target Venue *@
+                    <div class="col-md-6">
+                        <div class="fw-black text-muted small text-uppercase mb-2">Target Venue</div>
+                        <div class="fw-black h4 text-primary">@Model.Venue?.VenueName</div>
+                    </div>
+
+                    @* Timeline *@
+                    <div class="col-md-6">
+                        <div class="fw-black text-muted small text-uppercase mb-2">Duration</div>
+                        <div class="fw-bold fs-5">
+                            @Model.BookingStartDate.ToString("dd MMM yyyy")
+                            <i class="bi bi-arrow-right mx-2 text-muted"></i>
+                            @Model.BookingEndDate.ToString("dd MMM yyyy")
                         </div>
-                    }
-                    else
-                    {
-                        <div class="p-5 bg-light rounded-4 text-center border">
-                            <i class="bi bi-calendar-x text-muted display-4 mb-3 d-block"></i>
-                            <p class="fw-bold text-muted mb-0">No active bookings are linked to this event record.</p>
-                        </div>
-                    }
+                    </div>
+
+                    @* Status *@
+                    <div class="col-md-6">
+                        <div class="fw-black text-muted small text-uppercase mb-2">Verification Status</div>
+                        <span class="badge rounded-pill bg-dark px-4 py-2 text-uppercase">@Model.BookingStatus</span>
+                    </div>
                 </div>
 
                 <div class="d-flex gap-3 pt-4 border-top">
-                    <a asp-action="Edit" asp-route-id="@Model.EventID" class="btn btn-brand-elite px-5">EDIT RECORD</a>
-                    <a asp-action="Index" class="btn btn-white border fw-black small px-4 shadow-sm text-decoration-none pt-2">BACK TO LIST</a>
+                    <a asp-action="Edit" asp-route-id="@Model.BookingID" class="btn btn-brand-elite px-5">MODIFY RECORD</a>
+                    <a asp-action="Index" class="btn btn-white border fw-black small px-4 shadow-sm text-decoration-none pt-2">BACK TO LEDGER</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@* TECHNICAL REFERENCES
-   ---------------------------------------------------
-   1. Referential Integrity: Use of navigation properties (Model.Bookings) to audit data relationships.
-   2. Razor Conditionals: Dynamically rendering list items vs empty states.
-   3. Date Formatting: Standard Specialist-readable formatting for temporal records.
-*@

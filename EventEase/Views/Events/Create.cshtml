@@ -1,63 +1,67 @@
-﻿@* EventEase Elite - New Booking Record
+﻿@* EventEase Elite - Event Registration
     Author: Joshua Marc Lourens
-    Description: Administrative interface for creating venue-event links. 
-    Implements automated conflict validation logic via the controller.
+    Description: Specialized administrative panel for defining upcoming university events.
+    Every event is linked to a physical Venue infrastructure.
 *@
 
-@model EventEase.Models.Booking
+@model EventEase.Models.Event
+
+@{
+    ViewData["Title"] = "Register Event";
+}
 
 <div class="container py-5 mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-5 col-md-8">
             <div class="venue-card-manage p-5 shadow-sm">
+                @* HEADER: Specifically for Events, not Bookings *@
                 <h2 class="fw-black text-uppercase mb-4" style="letter-spacing: -1.5px;">
-                    NEW <span class="text-primary hero-glow-text">BOOKING</span>
+                    REGISTER <span class="text-primary hero-glow-text">EVENT</span>
                 </h2>
                 
                 <form asp-action="Create">
-                    @* Displaying operational errors (like double bookings) in a bold alert box *@
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 small fw-bold mb-4 py-2"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
+                    @* EVENT NAME *@
                     <div class="mb-3">
-                        <label class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Target Venue</label>
+                        <label asp-for="EventName" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Event Identity</label>
+                        <input asp-for="EventName" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" placeholder="e.g. Annual Tech Symposium" />
+                        <span asp-validation-for="EventName" class="text-danger small"></span>
+                    </div>
+
+                    @* DESCRIPTION *@
+                    <div class="mb-3">
+                        <label asp-for="EventDescription" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Brief Description</label>
+                        <textarea asp-for="EventDescription" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" rows="3" placeholder="Describe the event purpose..."></textarea>
+                        <span asp-validation-for="EventDescription" class="text-danger small"></span>
+                    </div>
+
+                    @* VENUE SELECTION: Linking the event to a physical location *@
+                    <div class="mb-3">
+                        <label asp-for="VenueID" class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Physical Location</label>
                         <select asp-for="VenueID" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" asp-items="ViewBag.VenueID">
                             <option value="">: SELECT VENUE :</option>
                         </select>
                         <span asp-validation-for="VenueID" class="text-danger small"></span>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="fw-black small text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">Associated Event</label>
-                        <select asp-for="EventID" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" asp-items="ViewBag.EventID">
-                            <option value="">: SELECT EVENT :</option>
-                        </select>
-                        <span asp-validation-for="EventID" class="text-danger small"></span>
-                    </div>
-
-                    <div class="row g-3 mb-3">
+                    @* TIMELINE *@
+                    <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="fw-black small text-muted text-uppercase mb-2 d-block">Start Date</label>
-                            <input asp-for="BookingStartDate" type="date" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
-                            <span asp-validation-for="BookingStartDate" class="text-danger small"></span>
+                            <label asp-for="EventStartDate" class="fw-black small text-muted text-uppercase mb-2 d-block">Start Date</label>
+                            <input asp-for="EventStartDate" type="date" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
+                            <span asp-validation-for="EventStartDate" class="text-danger small"></span>
                         </div>
                         <div class="col-md-6">
-                            <label class="fw-black small text-muted text-uppercase mb-2 d-block">End Date</label>
-                            <input asp-for="BookingEndDate" type="date" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
-                            <span asp-validation-for="BookingEndDate" class="text-danger small"></span>
+                            <label asp-for="EventEndDate" class="fw-black small text-muted text-uppercase mb-2 d-block">End Date</label>
+                            <input asp-for="EventEndDate" type="date" class="form-control border-0 bg-light p-3 rounded-4 fw-bold" />
+                            <span asp-validation-for="EventEndDate" class="text-danger small"></span>
                         </div>
                     </div>
 
-                    <div class="mb-5">
-                        <label class="fw-black small text-muted text-uppercase mb-2 d-block">Verification Status</label>
-                        <select asp-for="BookingStatus" class="form-control border-0 bg-light p-3 rounded-4 fw-bold">
-                            <option value="Pending">Pending</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                    </div>
-
+                    @* ACTIONS *@
                     <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-brand-elite py-3">CONFIRM RECORD</button>
+                        <button type="submit" class="btn btn-brand-elite py-3">CONFIRM REGISTRATION</button>
                         <a asp-action="Index" class="fw-black text-muted text-center text-decoration-none small">CANCEL AND RETURN</a>
                     </div>
                 </form>
@@ -74,8 +78,7 @@
 
 @* TECHNICAL REFERENCES
    ---------------------------------------------------
-   1. SelectList Binding: Implementation of ViewBag data for relational foreign keys.
-   2. Model State Validation: Handling server-side conflict detection in Razor.
-   3. UI Layout: Centered column design for focused administrative data entry.
-   4. Date Formatting: Standard HTML5 date-pickers with MVC model binding.
+   1. Data Binding: Mapping inputs to the Event model properties.
+   2. Foreign Key Dropdown: Utilizing ViewBag.VenueID to link Events to Venues.
+   3. Validation: Client-side enforcement of required event fields.
 *@

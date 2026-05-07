@@ -1,7 +1,8 @@
 ﻿/* EventEase Elite - Events Infrastructure
    Author: Joshua Marc Lourens
    Description: Manages administrative event definitions. 
-   Implements referential integrity gates to prevent orphaned booking data.
+   Implements referential integrity gates to prevent orphaned booking data and 
+   includes pre-flight infrastructure checks for stable record creation.
 */
 
 using System;
@@ -26,6 +27,7 @@ namespace EventEase.Controllers
         }
 
         // GET: Events
+        // Logic: Implements administrative search functionality to retrieve events by name or description.
         public async Task<IActionResult> Index(string searchString)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -41,6 +43,7 @@ namespace EventEase.Controllers
         }
 
         // GET: Events/Details/5
+        // Logic: Eager loads the associated Venue and Bookings to provide a comprehensive event profile.
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -58,6 +61,15 @@ namespace EventEase.Controllers
         // GET: Events/Create
         public IActionResult Create()
         {
+            // SPECIALIST CHECK: Every event requires an existing Venue for allocation.
+            // This prevents system crashes during the registration process.
+            if (!_context.Venue.Any())
+            {
+                // UI Feedback: Forcing the specialist to register infrastructure (Venues) first.
+                TempData["ErrorMessage"] = "SYSTEM ALERT: No Venues detected. You must register a Venue before creating an Event schedule.";
+                return RedirectToAction(nameof(Index));
+            }
+
             ViewData["VenueID"] = new SelectList(_context.Venue, "VenueID", "VenueName");
             return View();
         }
@@ -103,7 +115,7 @@ namespace EventEase.Controllers
                 {
                     _context.Update(@event);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Event record successfully updated.";
+                    TempData["SuccessMessage"] = "Event record updated.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -135,15 +147,14 @@ namespace EventEase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            /* --- ELITE REFERENTIAL INTEGRITY CHECK --- 
-               Ensuring this event isn't linked to existing bookings. 
-               This prevents SQL Foreign Key errors and system crashes.
-            */
+            // REFERENTIAL INTEGRITY CHECK: Block deletion if records are linked to prevent data orphaning.
+            // This maintains the stability of the administrative ledger.
             bool hasLinkedBookings = await _context.Booking.AnyAsync(b => b.EventID == id);
 
             if (hasLinkedBookings)
             {
-                TempData["ErrorMessage"] = "CANNOT DELETE: This event is currently linked to active bookings.";
+                // BLOCK THE DELETE and provide tactical feedback to the interface.
+                TempData["ErrorMessage"] = "CANNOT DELETE: This event is currently linked to active bookings. Remove associated bookings first.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -164,7 +175,8 @@ namespace EventEase.Controllers
 
 /* TECHNICAL REFERENCES
    ---------------------------------------------------
-   1. Referential Integrity Logic: Validating database constraints at the application level.
-   2. Eager Loading: Using .Include() for related Venue and Booking datasets.
-   3. Async Programming: Implementation of Task-based asynchronous controller actions.
+   1. Referential Integrity Logic: Validating database constraints at the application level to ensure data stability.
+   2. Eager Loading (.Include): Aggregating related Venue and Booking datasets in a single efficient query.
+   3. UI Error Handling: Implementation of TempData-based global alert systems for real-time specialist feedback.
+   4. Async Programming: Implementation of Task-based asynchronous controller actions for cloud-ready infrastructure.
 */

@@ -1,45 +1,62 @@
-﻿@* EventEase Elite - Purge Booking
+﻿@* EventEase Elite - Event Decommissioning
     Author: Joshua Marc Lourens
-    Description: Permanent decommissioning of a booking record. 
-    Implements a distinct 'Purge' aesthetic using high-alert red tones.
+    Description: Confirmation interface for removing event records.
+    Implements security protocols to prevent accidental data loss.
 *@
 
-@model EventEase.Models.Booking
+@model EventEase.Models.Event
+
+@{
+    ViewData["Title"] = "Delete Event";
+}
 
 <div class="container py-5 mt-5">
     <div class="row justify-content-center">
-        <div class="col-lg-5 text-center">
-            @* Border accent ensures the specialist is aware of the destructive action *@
-            <div class="venue-card-manage p-5 shadow-sm border-danger border-opacity-25">
-                <div class="mb-4">
-                    <i class="bi bi-shield-slash-fill text-danger" style="font-size: 3.5rem;"></i>
-                </div>
-                
-                <h2 class="fw-black text-uppercase mb-3" style="letter-spacing: -1px;">
-                    PURGE <span class="text-danger">RECORD</span>
-                </h2>
-                
-                <p class="text-muted fw-bold small mb-5" style="letter-spacing: 1px;">
-                    THIS WILL REMOVE THE LINKED DATA PERMANENTLY.
-                </p>
-
-                @* Verification block re-stating the ID and event for specialist final checks *@
-                <div class="bg-light p-4 rounded-4 mb-5 text-start border">
-                    <div class="fw-black text-muted small text-uppercase mb-1" style="font-size: 0.7rem;">Booking Reference</div>
-                    <div class="fw-black h5 m-0 text-dark">#@Model.BookingID</div>
-                    <hr class="my-3 opacity-10">
-                    <div class="fw-black text-muted small text-uppercase mb-1" style="font-size: 0.7rem;">Assigned Event</div>
-                    <div class="fw-bold small text-muted">@Model.Event?.EventName</div>
+        <div class="col-lg-6">
+            <div class="venue-card-manage p-5 shadow-sm border-0">
+                @* ALERT HEADER *@
+                <div class="text-center mb-4">
+                    <div class="display-1 text-danger mb-3">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <h2 class="fw-black text-uppercase tracking-tight">Decommission <span class="text-primary">Event</span></h2>
+                    <p class="text-muted fw-bold small text-uppercase">This action is permanent and cannot be undone.</p>
                 </div>
 
+                <hr class="my-4 opacity-25">
+
+                @* EVENT DETAILS BOX *@
+                <div class="bg-light p-4 rounded-4 mb-4">
+                    <div class="mb-3">
+                        <label class="fw-black small text-muted text-uppercase d-block mb-1">Event Identity</label>
+                        <p class="h4 fw-black m-0 text-primary">@Html.DisplayFor(model => model.EventName)</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-black small text-muted text-uppercase d-block mb-1">Schedule Range</label>
+                        <p class="fw-bold m-0">
+                            @Model.EventStartDate.ToString("dd MMM yyyy")
+                            <i class="bi bi-arrow-right mx-2 text-muted"></i>
+                            @Model.EventEndDate.ToString("dd MMM yyyy")
+                        </p>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="fw-black small text-muted text-uppercase d-block mb-1">Physical Location</label>
+                        <p class="fw-bold m-0">@Html.DisplayFor(model => model.Venue.VenueName)</p>
+                    </div>
+                </div>
+
+                @* ACTION FORM *@
                 <form asp-action="Delete">
-                    <input type="hidden" asp-for="BookingID" />
+                    <input type="hidden" asp-for="EventID" />
+                    
                     <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-brand-elite py-3 shadow-sm" style="background: #dc3545 !important;">
-                            PURGE FROM SYSTEM
+                        <button type="submit" class="btn btn-danger py-3 fw-black text-uppercase shadow-sm">
+                            <i class="bi bi-trash3-fill me-2"></i> Confirm Deletion
                         </button>
-                        <a asp-action="Index" class="fw-black text-muted text-decoration-none small">
-                            CANCEL AND RETAIN LINK
+                        <a asp-action="Index" class="btn btn-white py-3 fw-black text-muted text-uppercase small text-decoration-none">
+                            Cancel and Return
                         </a>
                     </div>
                 </form>
@@ -50,7 +67,8 @@
 
 @* TECHNICAL REFERENCES
    ---------------------------------------------------
-   1. Data Purging Patterns: Principles of irreversible administrative deletions.
-   2. UI Color Psychology: Application of the 'Danger' palette for critical warnings.
-   3. Razor Conditional Check: Verifying navigation properties during final deletion steps.
+   1. Strong Typing: Utilizing @model EventEase.Models.Event to prevent ViewData type mismatches.
+   2. Hidden Input: Mapping the EventID primary key for the POST action.
+   3. Eager Loading: Displaying related Venue data via the navigation property.
+   4. UI Safety Pattern: Using a confirmation middle-page to prevent accidental record removal.
 *@

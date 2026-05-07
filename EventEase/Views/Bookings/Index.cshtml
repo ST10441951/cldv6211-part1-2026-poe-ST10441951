@@ -1,7 +1,7 @@
 ﻿@* EventEase Elite - Booking Ledger
     Author: Joshua Marc Lourens
     Description: The central administrative log for monitoring venue allocations.
-    Implements an empty-state row for when no bookings match the current filter.
+    Implements explicit routing and automated empty-state handling for clear auditing.
 *@
 
 @model IEnumerable<EventEase.Models.Booking>
@@ -16,14 +16,15 @@
             <p class="text-muted fw-bold small text-uppercase mt-2" style="letter-spacing: 2px;">Centralized Conflict Prevention Hub</p>
         </div>
         
-        <a asp-action="Create" class="btn btn-brand-elite shadow-sm">
-            <i class="bi bi-calendar-check me-2"></i> New Booking
+        @* FIXED ROUTING: Explicitly targeting the Bookings controller to prevent redirection to Events *@
+        <a asp-controller="Bookings" asp-action="Create" class="btn btn-brand-elite shadow-sm">
+            <i class="bi bi-calendar-check me-2"></i> Register Booking
         </a>
     </div>
 
-    @* --- SEARCH PANEL --- *@
+    @* --- SEARCH PANEL (Requirement C) --- *@
     <div class="venue-card-manage p-3 mb-5 bg-light border-0 shadow-sm">
-        <form asp-action="Index" method="get">
+        <form asp-controller="Bookings" asp-action="Index" method="get">
             <div class="input-group">
                 <span class="input-group-text bg-transparent border-0 ps-3 text-muted">
                     <i class="bi bi-search"></i>
@@ -37,17 +38,14 @@
         </form>
     </div>
 
-    @* --- LEDGER TABLE / EMPTY STATE ---
-       We maintain the table structure so the header stays visible, but provide 
-       a high-impact empty row if no records exist.
-    *@
+    @* --- LEDGER TABLE / EMPTY STATE --- *@
     <div class="venue-card-manage overflow-hidden border-0 shadow-sm">
         <div class="table-responsive" style="overflow: visible !important;">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-dark text-white">
                     <tr>
                         <th class="ps-4 py-3 fw-black small text-uppercase">ID</th>
-                        <th class="py-3 fw-black small text-uppercase">Specialist Link</th>
+                        <th class="py-3 fw-black small text-uppercase">Consolidated Link</th>
                         <th class="py-3 fw-black small text-uppercase">Timeline</th>
                         <th class="py-3 fw-black small text-uppercase">Status</th>
                         <th class="py-3 text-end pe-4 fw-black small text-uppercase">Actions</th>
@@ -62,23 +60,29 @@
                                 <td class="ps-4 fw-black text-primary">#@item.BookingID</td>
                                 <td>
                                     <div class="fw-bold text-dark">@item.Event?.EventName</div>
-                                    <div class="text-muted small fw-bold">at @item.Venue?.VenueName</div>
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                        <i class="bi bi-geo-alt-fill text-primary me-1"></i> @item.Venue?.VenueName
+                                    </div>
                                 </td>
                                 <td>
-                                    <div class="fw-bold small text-dark">@item.BookingStartDate.ToString("dd MMM") : @item.BookingEndDate.ToString("dd MMM yyyy")</div>
+                                    <div class="fw-bold small text-dark">
+                                        @item.BookingStartDate.ToString("dd MMM")
+                                        <i class="bi bi-arrow-right mx-1 text-muted"></i>
+                                        @item.BookingEndDate.ToString("dd MMM yyyy")
+                                    </div>
                                 </td>
                                 <td>
                                     @if (item.BookingStatus == "Confirmed")
                                     {
-                                        <span class="stat-pill bg-success bg-opacity-10 text-success border-success border-opacity-25 border">CONFIRMED</span>
+                                        <span class="badge rounded-pill bg-success bg-opacity-10 text-success border-success border-opacity-25 border px-3 py-2">CONFIRMED</span>
                                     }
                                     else if (item.BookingStatus == "Cancelled")
                                     {
-                                        <span class="stat-pill bg-danger bg-opacity-10 text-danger border-danger border-opacity-25 border">CANCELLED</span>
+                                        <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border-danger border-opacity-25 border px-3 py-2">CANCELLED</span>
                                     }
                                     else
                                     {
-                                        <span class="stat-pill bg-warning bg-opacity-10 text-dark border-warning border-opacity-25 border">PENDING</span>
+                                        <span class="badge rounded-pill bg-warning bg-opacity-10 text-dark border-warning border-opacity-25 border px-3 py-2">PENDING</span>
                                     }
                                 </td>
                                 <td class="text-end pe-4">
@@ -98,12 +102,11 @@
                     }
                     else
                     {
-                        @* Centered Empty State Row *@
                         <tr>
                             <td colspan="5" class="text-center py-5">
                                 <i class="bi bi-journal-x text-muted display-1 mb-3 d-block"></i>
                                 <h3 class="fw-black text-muted text-uppercase">No Bookings Found</h3>
-                                <p class="text-muted small fw-bold text-uppercase">The ledger is currently clear of reservations.</p>
+                                <p class="text-muted small fw-bold text-uppercase">Check your search criteria or register a new resource allocation.</p>
                             </td>
                         </tr>
                     }
@@ -115,6 +118,8 @@
 
 @* TECHNICAL REFERENCES
    ---------------------------------------------------
-   1. Table Colspan: Ensuring the empty state spans the full width of the data ledger.
-   2. UX Feedback: Using specific icons (bi-journal-x) to represent specialized missing data.
+   1. Explicit Route Tag Helpers: Using 'asp-controller' to anchor navigation to the Bookings domain.
+   2. Conditional Badge Logic: Enhancing administrative clarity through status-based visual markers.
+   3. Table Responsibility: Maintaining column alignment via colspan="5" for empty-state messaging.
+   4. Consolidated View: Displaying Venue and Event navigation properties to fulfill Requirement C.
 *@
